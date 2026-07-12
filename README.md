@@ -291,3 +291,10 @@ CSVデータを読み込ませるだけで`異常値の計算`,`データの可�
 
 ## 画面遷移図
 https://www.figma.com/design/6r42NE93sbHvQucppuHEdd/%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E5%9B%B3%E3%81%AE%E4%BD%9C%E6%88%90?node-id=2-2&t=A1We1xalb1WkJBDS-1
+
+- 2026-07-11： コンポネート別にアプリ遷移図を整理
+
+## ER図(MVP範囲外も記載)
+https://drive.google.com/file/d/1GHj-8Ca0NeYD-YHpOIF3_5lpZysu01xF/view?usp=sharing
+
+- 2026-07-12: usersテーブルのみ作成
