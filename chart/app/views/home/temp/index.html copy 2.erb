@@ -1,0 +1,54 @@
+<div style="position: relative; width: 90%; max-width: 800px; margin: auto; height: 400px;">
+  <canvas id="myChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// 1. ユーザーが定義した新しいデータ形式
+const labels = ['A', 'B', 'C', 'D'];
+const rawData = [
+  [10, 15, 20, 25, 30], // ラベルAのデータ (5回分)
+  [15, 10, 15, 20, 10], // ラベルBのデータ (5回分)
+  [20, 25, 30, 35, 20], // ラベルCのデータ (5回分)
+  [35, 20, 15, 30, 10]  // ラベルDのデータ (5回分)
+];
+
+// 2. データの「縦横」をChart.js用に変換する
+// Chart.jsは「データセット1つにつき、各ラベルの値を1つずつ持つ」形式にする必要があります。
+const times = ['第1回', '第2回', '第3回', '第4回', '第5回']; // 5つ分のデータの名前
+const colors = [
+  'rgba(255, 99, 132, 0.7)',  // 1回目の色
+  'rgba(54, 162, 235, 0.7)',  // 2回目の色
+  'rgba(255, 206, 86, 0.7)',  // 3回目の色
+  'rgba(75, 192, 192, 0.7)',  // 4回目の色
+  'rgba(153, 102, 255, 0.7)'  // 5回目の色
+];
+
+// rawDataから、Chart.jsが求める「回ごとの配列」へ組み替えます
+const datasets = times.map((timeName, index) => {
+  return {
+    label: timeName,
+    // 各ラベル（A, B, C, D）の index 番目のデータを集める
+    data: rawData.map(labelData => labelData[index]),
+    backgroundColor: colors[index],
+    borderWidth: 1
+  };
+});
+
+// 3. グラフの描画
+const ctx = document.getElementById('myChart');
+const myChart = new Chart(ctx, {
+  type: 'line', // 'bar' に変えても綺麗に見えます！
+  data: {
+    labels: labels, // ['A', 'B', 'C', 'D']
+    datasets: datasets // 変換後のデータセット
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: { beginAtZero: true }
+    }
+  }
+});
+</script>
