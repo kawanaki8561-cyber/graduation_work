@@ -6,8 +6,7 @@ services:
       - mysql_data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: password
-    ports:
-      - "3306:3306"
+    # 外部接続用の ports は削除（コンテナ間通信のみ）
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot --password=password || exit 1"]
       interval: 5s
