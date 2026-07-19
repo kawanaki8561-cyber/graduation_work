@@ -1,0 +1,21 @@
+# 1.プラグインの読み込み
+plugins:
+  - rubocop-rails
+  - rubocop-performance
+
+# 2. 全般設定
+AllCops:
+  TargetRailsVersion: 7.1
+
+# 3. 個別ルールの設定
+Layout/LineLength:
+  Max: 120
+
+Style/Documentation:
+  Enabled: false
+
+  # ブロック行数の制限から、設定ファイルとルーティングファイルを除外
+Metrics/BlockLength:
+  Exclude:
+    - 'config/environments/*.rb'
+    - 'config/routes.rb'
