@@ -9,5 +9,8 @@ gem "importmap-rails"
 gem "devise", "~> 4.9"
 
 group :development, :test do
+  gem 'rubocop', require: false
+  gem 'rubocop-rails', require: false
+  gem 'rubocop-performance', require: false # Issue記載の要件に準拠
   gem "debug", platforms: %i[ mri windows ]
 end
