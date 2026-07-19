@@ -21,5 +21,5 @@ production:
   #password: <%= ENV["APP_DATABASE_PASSWORD"] %>
   adapter: sqlite3
   database: db/production.sqlite3
-  pool: <%= env.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000  
