@@ -1,0 +1,10 @@
+<h1>Bullet動作テスト画面</h1>
+<% @posts.each do |post| %>
+  <p>親データ: <%= post.name %></p>
+  <ul>
+    <!-- ここでループするたびに子データを取得するクエリ（N回）が発行されます -->
+    <% post.comments.each do |comment| %>
+      <li>子データ: <%= comment.name %></li>
+    <% end %>
+  </ul>
+<% end %>
