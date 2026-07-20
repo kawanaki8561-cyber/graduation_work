@@ -9,6 +9,7 @@ gem 'mysql2', '~> 0.5'
 gem 'puma', '>= 5.0'
 gem 'rails', '~> 7.1.6'
 gem 'sprockets-rails'
+gem "stimulus-rails"
 
 group :development, :test do
   gem 'debug', platforms: %i[mri]
