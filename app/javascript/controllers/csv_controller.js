@@ -16,6 +16,7 @@ export default class extends Controller {
       dynamicTyping: true,   // idや測定値を自動的に数値型(Number)に変換する
       worker: false,         // メインスレッドで安全に処理する
       skipEmptyLines: true,  // 末尾の空行などを無視する
+      encoding: "Shift_JIS",   // Shift_JISを正しく読み込む
       
       // ※もしExcelで保存したShift-JISのCSVで文字化けする場合は、
       // 以下のコメントアウトを外してエンコーディングを指定してください
