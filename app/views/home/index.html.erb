@@ -10,7 +10,9 @@
     <!-- カラム選択用のセレクトボックスを追加 -->
     <div class="spc-chart-selection">
       <label>Y軸カラム選択</label>
-      <select data-spc-chart-target="select">
+
+      <!-- ▼▼ data-action を追加 ▼▼ -->      
+      <select data-spc-chart-target="select" data-action="change->spc-chart#extracData">
         <option value="" >カラムを選択してください</option>
       </select>
     </div>
