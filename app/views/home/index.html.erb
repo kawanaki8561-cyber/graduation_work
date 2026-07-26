@@ -4,13 +4,14 @@
 
 <h2>グラフ解析領域</h2>
 
+<div data-controller="spc-chart">
+ 
+    <input type="file" accept=".csv" data-action="change->spc-chart#handleFileUpload">
 
-<div data-controller="csv">
-  <input type="file" accept=".csv" data-action="change->csv#parse">
-
-    <!-- 解析結果を表示するための領域を追加 -->
-  <div style="margin-top: 20px;">
-    <h3>解析結果プレビュー:</h3>
-    <pre data-csv-target="output" style="background: #f4f4f4; padding: 10px;"></pre>
-  </div>
+      <!-- 解析結果を表示するための領域を追加 -->
+    <div style="margin-top: 20px;">
+      <h3>解析結果プレビュー:</h3>
+      <pre data-spc-chart-target="output" style="background: #f4f4f4; padding: 10px;"></pre>
+    </div>
+ 
 </div>
