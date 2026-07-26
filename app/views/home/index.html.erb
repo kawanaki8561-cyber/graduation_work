@@ -7,11 +7,18 @@
 <div data-controller="spc-chart">
  
     <input type="file" accept=".csv" data-action="change->spc-chart#handleFileUpload">
+    <!-- カラム選択用のセレクトボックスを追加 -->
+    <div class="spc-chart-selection">
+      <label>Y軸カラム選択</label>
+      <select data-spc-chart-target="select">
+        <option value="" >カラムを選択してください</option>
+      </select>
+    </div>
 
-      <!-- 解析結果を表示するための領域を追加 -->
-    <div style="margin-top: 20px;">
+    <!-- 解析結果を表示するための領域を追加 -->
+    <div class="spc-chart-section">
       <h3>解析結果プレビュー:</h3>
-      <pre data-spc-chart-target="output" style="background: #f4f4f4; padding: 10px;"></pre>
+      <pre data-spc-chart-target="output" class="spc-chart-preview"></pre>
     </div>
  
 </div>
