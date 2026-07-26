@@ -87,4 +87,24 @@ export default class extends Controller {
     console.log(`【${selectedColumn}】の抽出データ:`, columnData);
 
   }
+
+   calculateSPC(dataArray) {
+    // 1. 欠損値（null/undefined）や非数値（NaN）を除外して有効なデータの配列を作る
+    const validData = dataArray.filter(val => val !== null && val !== undefined && !isNaN(val));
+
+    // 2. データ数が2つ未満の場合は標準偏差が計算できないため中断
+    if (validData.length < 2) {
+      console.warn("計算に必要なデータ数が不足しています");
+      return;
+    }
+
+    // 3. 【Step 3】 simple-statistics による平均値と標準偏差の算出
+    const cl = mean(validData);
+    const sigma = standardDeviation(validData);
+
+    // 算出結果の確認用ログ
+    console.log(`平均値(CL): ${cl}, 標準偏差(σ): ${sigma}`);
+
+    // ※ ここに次の Step 4 以降の処理（UCL/LCLの計算と画面出力）を追加していきます
+  }
 }
