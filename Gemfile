@@ -26,4 +26,5 @@ end
 
 group :test do
   gem 'simplecov', require: false
+  gem 'shoulda-matchers', '~> 5.0' # ← この行を追加します
 end
