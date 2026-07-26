@@ -71,4 +71,20 @@ export default class extends Controller {
 
   }
   
+    
+  // 【STEP 4 で追加】セレクトボックス変更時にデータ配列を抽出するメソッド
+  extractData(event){
+    // 選択されたセレクトボックスの値（カラム名）を取得
+    const selectedColumn = event.target.value; 
+
+    // 「カラムを選択してください」などの空の値が選ばれた場合は終了
+    if (!selectedColumn) return;
+
+    // 保持している this.csvData から、選択されたカラムの値だけを抽出して新しい配列を作成
+    const columnData = this.csvData.map(row => row[selectedColumn]);
+
+    // 抽出データの確認（ブラウザのコンソールに出力されます）
+    console.log(`【${selectedColumn}】の抽出データ:`, columnData);
+
+  }
 }
