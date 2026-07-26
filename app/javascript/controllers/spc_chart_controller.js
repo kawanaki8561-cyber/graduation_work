@@ -4,7 +4,13 @@ import Papa from "papaparse"
 // Connects to data-controller="spc-chart"
 
 export default class extends Controller {
-  static targets = [ "output" ] 
+  // "output" と "select" のターゲットを定義
+  static targets = [ "output","select" ] 
+
+  //コントローラー接続時にCSVデータを保持するための変数を初期化
+  connect(){
+    this.csvData = []
+  }
 
   handleFileUpload(event) {
     const file = event.target.files.item(0); 
@@ -31,9 +37,15 @@ export default class extends Controller {
           this.outputTarget.textContent = "警告/エラーが発生しました:\n" + JSON.stringify(results.errors, null, 2);
           return;
         }
+        // 後でデータを抽出できるように、パース結果のデータをクラス変数に保持
+        this.csvData = results.data;
 
         // 成功した場合、綺麗にフォーマットされたJSONが出力されます
         this.outputTarget.textContent = JSON.stringify(results.data, null, 2);
+
+        // ヘッダー情報の配列(results.meta.fields)を渡してセレクトボックスを構築
+        this.buildSelectOptions(results.meta.fields);
+
       },
       
       error: (error) => {
@@ -41,5 +53,38 @@ export default class extends Controller {
         console.error("CSV解析エラー:", error);
       }
     });
+  }
+
+  //セレクトボックスの選択肢（<option>）を動的生成するメソッド
+  buildSelectOptions(fields){
+    if(!fields) return;
+
+    this.selectTarget.innerHTML = '<option value="">カラムを選択してください</option>';
+
+    // Array.prototype.map() を使い、カラム名から新しい Option 要素の配列を生成
+    const options = fields.map(field => new Option(field, field));
+
+    // 生成した Option 要素を <select> ターゲットに追加
+    options.forEach(option => {
+      this.selectTarget.add(option);
+    });
+
+  }
+  
+    
+  // 【STEP 4 で追加】セレクトボックス変更時にデータ配列を抽出するメソッド
+  extractData(event){
+    // 選択されたセレクトボックスの値（カラム名）を取得
+    const selectedColumn = event.target.value; 
+
+    // 「カラムを選択してください」などの空の値が選ばれた場合は終了
+    if (!selectedColumn) return;
+
+    // 保持している this.csvData から、選択されたカラムの値だけを抽出して新しい配列を作成
+    const columnData = this.csvData.map(row => row[selectedColumn]);
+
+    // 抽出データの確認（ブラウザのコンソールに出力されます）
+    console.log(`【${selectedColumn}】の抽出データ:`, columnData);
+
   }
 }

@@ -1,0 +1,12 @@
+/* app/assets/stylesheets/spc_chart.css  */
+
+/* 各セクションの上の余白用 */
+.spc-chart-section {
+  margin-top: 20px;
+}
+
+/* 解析結果プレビューの背景と内側余白用 */
+.spc-chart-preview {
+  background-color: #f4f4f4;
+  padding: 10px;
+}
