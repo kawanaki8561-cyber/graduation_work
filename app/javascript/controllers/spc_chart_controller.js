@@ -110,5 +110,9 @@ export default class extends Controller {
     console.log(`平均値(CL): ${cl}, 標準偏差(σ): ${sigma}`);
 
     // ※ ここに次の Step 4 以降の処理（UCL/LCLの計算と画面出力）を追加していきます
+    // 4. 【Step 4】 上方・下方管理限界線（UCL / LCL）の算出 (平均±3σ)
+    const ucl = cl + (3 * sigma);
+    const lcl = cl - (3 * sigma);
+    console.log(`UCL(+3σ): ${ucl}, LCL(-3σ): ${lcl}`);
   }
 }
