@@ -1,16 +1,21 @@
 import { Controller } from "@hotwired/stimulus"
 import Papa from "papaparse"
 import { mean, standardDeviation } from "simple-statistics" 
+//import Chart from 'chart.js/auto';
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
 
 // Connects to data-controller="spc-chart"
 
 export default class extends Controller {
   // "output" と "select" のターゲットを定義
-  static targets = [ "output", "select", "mean", "stddev", "ucl", "lcl", "outliers" ]  
-
+  
+static targets = [ "output", "select", "mean", "stddev", "ucl", "lcl", "outliers", "canvas" ]  
   //コントローラー接続時にCSVデータを保持するための変数を初期化
   connect(){
     this.csvData = []
+    // ▼ グラフのインスタンスを保持する変数を追加（重複描画を防ぐため）
+    this.chart = null
   }
 
   handleFileUpload(event) {
@@ -133,5 +138,77 @@ export default class extends Controller {
     if (this.hasOutliersTarget) {
       this.outliersTarget.textContent = outlierIndices.length > 0 ? outlierIndices.join(', ') : "なし";
     }
+
+    // ▼ ここから追加: グラフ描画メソッドの呼び出し ▼
+    this.drawChart(validData, cl, ucl, lcl, outlierIndices);
+    // ▲ ここまで追加 ▲
+  }
+
+  // グラフを描画するメソッド
+  drawChart(validData, cl, ucl, lcl, outlierIndices) {
+    // 1. 古いグラフが存在する場合は破棄して重複描画を防ぐ
+    if(this.chart){
+      this.chart.destroy();
+    }
+    // 2. X軸のラベルを作成 (データ数に合わせて 1, 2, 3... と連番を振る)
+    const labels = validData.map((_, index) => index + 1);
+
+    // 3. UCL, CL, LCL を直線のデータとして定数配列化する
+    const uclData = Array(validData.length).fill(ucl);
+    const clData = Array(validData.length).fill(cl);
+    const lclData = Array(validData.length).fill(lcl);
+
+    // 4. キャンバスの描画コンテキストを取得
+    const ctx = this.canvasTarget.getContext('2d');
+    
+    // 5. Chart.jsインスタンスの生成
+    this.chart = new Chart(ctx, {
+      type: 'line', // 折れ線グラフを指定
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: '測定値',
+            data: validData,
+            borderColor: 'blue',
+            borderWidth: 2,
+            // Scriptable Options を用いた異常値ハイライト
+            pointBackgroundColor: (context) => {
+              const index = context.dataIndex;
+              return outlierIndices.includes(index) ? 'red' : 'blue'; 
+            },
+            pointRadius: (context) => {
+              const index = context.dataIndex;
+              return outlierIndices.includes(index) ? 6 : 3; 
+            }
+          },
+          {
+            label: 'UCL (+3σ)',
+            data: uclData,
+            borderColor: 'rgba(255, 99, 132, 0.5)',
+            borderDash: [3], // 点線にする
+            pointRadius: 0 // 丸マーカーを非表示
+          },
+          {
+            label: 'CL (平均)',
+            data: clData,
+            borderColor: 'rgba(75, 192, 192, 0.5)',
+            borderDash: [3],
+            pointRadius: 0
+          },
+          {
+            label: 'LCL (-3σ)',
+            data: lclData,
+            borderColor: 'rgba(255, 99, 132, 0.5)',
+            borderDash: [3],
+            pointRadius: 0
+          }
+        ]
+      },
+      options: {
+        responsive: true
+      }
+    });
+
   }
 }
