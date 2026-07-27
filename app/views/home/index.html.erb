@@ -16,9 +16,20 @@
         <option value="" >カラムを選択してください</option>
       </select>
     </div>
-
     <!-- 解析結果を表示するための領域を追加 -->
     <div class="spc-chart-section">
+      <!-- ▼ SPC計算結果出力用Target群を追加 ▼ -->
+      <div class="spc-results">
+        <ul>
+          <li>平均 (CL): <span data-spc-chart-target="mean"></span></li>
+          <li>標準偏差 (σ): <span data-spc-chart-target="stddev"></span></li>
+          <li>UCL (+3σ): <span data-spc-chart-target="ucl"></span></li>
+          <li>LCL (-3σ): <span data-spc-chart-target="lcl"></span></li>
+          <li>外れ値のインデックス (TEST1): <span data-spc-chart-target="outliers"></span></li>
+        </ul>
+      </div>
+      <!-- ▲ ここまで ▲ -->
+
       <h3>解析結果プレビュー:</h3>
       <pre data-spc-chart-target="output" class="spc-chart-preview"></pre>
     </div>

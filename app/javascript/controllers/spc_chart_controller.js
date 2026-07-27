@@ -1,11 +1,12 @@
 import { Controller } from "@hotwired/stimulus"
 import Papa from "papaparse"
+import { mean, standardDeviation } from "simple-statistics" 
 
 // Connects to data-controller="spc-chart"
 
 export default class extends Controller {
   // "output" と "select" のターゲットを定義
-  static targets = [ "output","select" ] 
+  static targets = [ "output", "select", "mean", "stddev", "ucl", "lcl", "outliers" ]  
 
   //コントローラー接続時にCSVデータを保持するための変数を初期化
   connect(){
@@ -85,6 +86,9 @@ export default class extends Controller {
 
     // 抽出データの確認（ブラウザのコンソールに出力されます）
     console.log(`【${selectedColumn}】の抽出データ:`, columnData);
+
+     // ★修正ポイント3: 抽出したデータを使って計算メソッドを呼び出す
+     this.calculateSPC(columnData);
 
   }
 
