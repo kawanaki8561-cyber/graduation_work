@@ -1,13 +1,14 @@
 import { Controller } from "@hotwired/stimulus"
 import Papa from "papaparse"
 import { mean, standardDeviation } from "simple-statistics" 
+import Chart from 'chart.js/auto';
 
 // Connects to data-controller="spc-chart"
 
 export default class extends Controller {
   // "output" と "select" のターゲットを定義
-  static targets = [ "output", "select", "mean", "stddev", "ucl", "lcl", "outliers" ]  
-
+  
+static targets = [ "output", "select", "mean", "stddev", "ucl", "lcl", "outliers" ]  
   //コントローラー接続時にCSVデータを保持するための変数を初期化
   connect(){
     this.csvData = []
