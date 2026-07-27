@@ -1,7 +1,9 @@
 import { Controller } from "@hotwired/stimulus"
 import Papa from "papaparse"
 import { mean, standardDeviation } from "simple-statistics" 
-import Chart from 'chart.js/auto';
+//import Chart from 'chart.js/auto';
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
 
 // Connects to data-controller="spc-chart"
 
@@ -136,10 +138,14 @@ static targets = [ "output", "select", "mean", "stddev", "ucl", "lcl", "outliers
     if (this.hasOutliersTarget) {
       this.outliersTarget.textContent = outlierIndices.length > 0 ? outlierIndices.join(', ') : "なし";
     }
+
+    // ▼ ここから追加: グラフ描画メソッドの呼び出し ▼
+    this.drawChart(validData, cl, ucl, lcl, outlierIndices);
+    // ▲ ここまで追加 ▲
   }
 
   // グラフを描画するメソッド
-  drawChart(validData, cl, ucl, lcl, outlinerIndices) {
+  drawChart(validData, cl, ucl, lcl, outlierIndices) {
     // 1. 古いグラフが存在する場合は破棄して重複描画を防ぐ
     if(this.chart){
       this.chart.destroy();
