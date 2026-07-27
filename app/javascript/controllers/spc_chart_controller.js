@@ -114,5 +114,13 @@ export default class extends Controller {
     const ucl = cl + (3 * sigma);
     const lcl = cl - (3 * sigma);
     console.log(`UCL(+3σ): ${ucl}, LCL(-3σ): ${lcl}`);
+
+    // 5. 【Step 5】 外れ値の判定ループ処理
+    const outlierIndices = [];
+    validData.forEach((value, index) => {
+      if (value > ucl || value < lcl) {
+        outlierIndices.push(index);
+      }
+    });
   }
 }
