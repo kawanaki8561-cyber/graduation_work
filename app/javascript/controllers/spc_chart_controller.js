@@ -1,11 +1,12 @@
 import { Controller } from "@hotwired/stimulus"
 import Papa from "papaparse"
+import { mean, standardDeviation } from "simple-statistics" 
 
 // Connects to data-controller="spc-chart"
 
 export default class extends Controller {
   // "output" と "select" のターゲットを定義
-  static targets = [ "output","select" ] 
+  static targets = [ "output", "select", "mean", "stddev", "ucl", "lcl", "outliers" ]  
 
   //コントローラー接続時にCSVデータを保持するための変数を初期化
   connect(){
@@ -86,5 +87,51 @@ export default class extends Controller {
     // 抽出データの確認（ブラウザのコンソールに出力されます）
     console.log(`【${selectedColumn}】の抽出データ:`, columnData);
 
+     // ★修正ポイント3: 抽出したデータを使って計算メソッドを呼び出す
+     this.calculateSPC(columnData);
+
+  }
+
+   calculateSPC(dataArray) {
+    // 1. 欠損値（null/undefined）や非数値（NaN）を除外して有効なデータの配列を作る
+    const validData = dataArray.filter(val => val !== null && val !== undefined && !isNaN(val));
+
+    // 2. データ数が2つ未満の場合は標準偏差が計算できないため中断
+    if (validData.length < 2) {
+      console.warn("計算に必要なデータ数が不足しています");
+      return;
+    }
+
+    // 3. 【Step 3】 simple-statistics による平均値と標準偏差の算出
+    const cl = mean(validData);
+    const sigma = standardDeviation(validData);
+
+    // 算出結果の確認用ログ
+    console.log(`平均値(CL): ${cl}, 標準偏差(σ): ${sigma}`);
+
+    // ※ ここに次の Step 4 以降の処理（UCL/LCLの計算と画面出力）を追加していきます
+    // 4. 【Step 4】 上方・下方管理限界線（UCL / LCL）の算出 (平均±3σ)
+    const ucl = cl + (3 * sigma);
+    const lcl = cl - (3 * sigma);
+    console.log(`UCL(+3σ): ${ucl}, LCL(-3σ): ${lcl}`);
+
+    // 5. 【Step 5】 外れ値の判定ループ処理
+    const outlierIndices = [];
+    validData.forEach((value, index) => {
+      if (value > ucl || value < lcl) {
+        outlierIndices.push(index);
+      }
+    });
+    
+    // 6. 画面（ViewのTarget）への結果出力（小数点第3位まで表示）
+    if (this.hasMeanTarget) this.meanTarget.textContent = cl.toFixed(3);
+    if (this.hasStddevTarget) this.stddevTarget.textContent = sigma.toFixed(3); // stddevターゲットに出力
+    if (this.hasUclTarget) this.uclTarget.textContent = ucl.toFixed(3);
+    if (this.hasLclTarget) this.lclTarget.textContent = lcl.toFixed(3);
+    
+    // 外れ値の出力
+    if (this.hasOutliersTarget) {
+      this.outliersTarget.textContent = outlierIndices.length > 0 ? outlierIndices.join(', ') : "なし";
+    }
   }
 }
