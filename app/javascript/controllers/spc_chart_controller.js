@@ -122,5 +122,16 @@ export default class extends Controller {
         outlierIndices.push(index);
       }
     });
+    
+    // 6. 画面（ViewのTarget）への結果出力（小数点第3位まで表示）
+    if (this.hasMeanTarget) this.meanTarget.textContent = cl.toFixed(3);
+    if (this.hasStddevTarget) this.stddevTarget.textContent = sigma.toFixed(3); // stddevターゲットに出力
+    if (this.hasUclTarget) this.uclTarget.textContent = ucl.toFixed(3);
+    if (this.hasLclTarget) this.lclTarget.textContent = lcl.toFixed(3);
+    
+    // 外れ値の出力
+    if (this.hasOutliersTarget) {
+      this.outliersTarget.textContent = outlierIndices.length > 0 ? outlierIndices.join(', ') : "なし";
+    }
   }
 }
