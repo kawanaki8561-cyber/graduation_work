@@ -15,11 +15,13 @@ test:
   database: app_test
 
 production:
-  #<<: *default
+  <<: *default
+  url: <%= ENV.fetch("DATABASE_URL") %>
   #database: app_production
   #username: app
   #password: <%= ENV["APP_DATABASE_PASSWORD"] %>
-  adapter: sqlite3
-  database: db/production.sqlite3
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  timeout: 5000  
+  
+  #adapter: sqlite3
+  #database: db/production.sqlite3
+  #pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  #timeout: 5000  
