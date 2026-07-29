@@ -1,21 +1,64 @@
-# 1.プラグインの読み込み
+# rubocop-rails などの拡張を使用している場合
 plugins:
   - rubocop-rails
   - rubocop-performance
+  #- rubocop-rspec
 
-# 2. 全般設定
 AllCops:
-  TargetRailsVersion: 7.1
+  # 新しいCop（ルール）が追加された際に自動で有効化（ターミナルの長い警告を消す）
+  NewCops: enable
+  # RuboCopの拡張に関する提案メッセージを非表示
+  SuggestExtensions: false
+  # Rubyのバージョン指定（必要に応じて自身の環境に合わせて変更）
+  TargetRubyVersion: 3.2
+  # 解析対象から外すファイル・ディレクトリ
+  Exclude:
+    - 'vendor/**/*'
+    - 'db/schema.rb'
+    - 'db/migrate/**/*' # マイグレーションファイルを除外
+    - 'bin/*'
+    - 'node_modules/**/*'
+    - 'config/environments/*'
+    - 'config/initializers/devise.rb' # Devise等の自動生成ファイル
 
-# 3. 個別ルールの設定
-Layout/LineLength:
-  Max: 120
+# ------------------------------------------------------------------
+# 開発を快適にするスタイル調整
+# ------------------------------------------------------------------
 
+# 日本語コメントを許可する
+Style/AsciiComments:
+  Enabled: false
+
+# ファイル先頭の `# frozen_string_literal: true` を必須にしない
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+# クラスやモジュールのドキュメント用コメントを必須にしない
 Style/Documentation:
   Enabled: false
 
-  # ブロック行数の制限から、設定ファイルとルーティングファイルを除外
-Metrics/BlockLength:
+# 1行の文字数制限（デフォルトの120文字から少し緩和するか、警告をオフにする）
+Layout/LineLength:
+  Max: 160
+  # 特定のファイル（routesなど）を除外したい場合は以下を設定
   Exclude:
-    - 'config/environments/*.rb'
+    - 'config/initializers/**/*'
     - 'config/routes.rb'
+
+# ------------------------------------------------------------------
+# メソッド長・複雑さの制限緩和
+# ------------------------------------------------------------------
+
+# 1メソッドあたりの行数制限（デフォルト10行は厳しすぎるため緩和）
+Metrics/MethodLength:
+  Max: 20
+  Exclude:
+    - 'db/migrate/**/*'
+
+# 1クラスあたりの行数制限
+Metrics/ClassLength:
+  Max: 150
+
+# ABCサイズ（コードの複雑さ指標）の閾値を調整
+Metrics/AbcSize:
+  Max: 30
