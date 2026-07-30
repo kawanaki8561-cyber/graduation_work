@@ -1,0 +1,17 @@
+<!-- TopNavBar Component -->
+<header class="bg-header-yellow fixed-top border-bottom">
+  <div class="container-xxl d-flex justify-content-between align-items-center px-4 px-md-5 h-100" style="height: 64px !important;">
+    <!-- Brand Logo -->
+    <div class="d-flex align-items-center gap-2">
+      <div class="bg-white p-1 d-inline-block">
+        <img alt="Logo" class="logo-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLRAiE7tcKyhA-q6tVU2LO9yCQfPec_7mPU3AkFz-0-p8OAMLRVStvyBt4ATPC94xYzl7YgbXWoH-UFpKd4xUeYPBKP9DxhSTQCY3M2ki43SqSWIAaaRIBx9VU7-QcO95KFo_mhm5v-E7QzF3pRslCn2vJRFLn3-_FJBBQfe5y28YjbrBkOZudPxvU7hO-DyJ6v_u57Ow2pRWWdsdqnsJa1C6CGpp5P9k32QWwp-XFuDrPQbDd6J3lo7o24A_xPE-pHA" style="clip-path: none;">
+      </div>
+      <span class="fs-4 fw-bold text-dark">AnalyticsApp</span>
+    </div>
+    <!-- Navigation Actions -->
+    <nav class="d-flex gap-2">
+      <%= link_to "ログイン", new_user_session_path, class: "btn btn-custom-gray fw-medium" %>
+      <%= link_to "新規登録", new_user_registration_path, class: "btn btn-custom-gray fw-medium" %>
+    </nav>
+  </div>
+</header>
