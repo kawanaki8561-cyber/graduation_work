@@ -1,40 +1,272 @@
-<h1>SPCデータ解析アプリ</h1>
-<%= button_to 'ログアウト', destroy_user_session_path, method: :delete %>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
+<style>
 
-<h2>グラフ解析領域</h2>
+    /* 画面幅の制限解除・スタイル整列 */
+    main.container {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
 
-<div data-controller="spc-chart">
- 
-    <input type="file" accept=".csv" data-action="change->spc-chart#handleFileUpload">
-    <!-- カラム選択用のセレクトボックスを追加 -->
-    <div class="spc-chart-selection">
-      <label>Y軸カラム選択</label>
+    :root {
+        --bs-primary: #6e5d13;
+        --on-surface: #181c20;
+        --on-surface-variant: #4b4738;
+        --surface-white: #ffffff;
+        --input-border: #dee2e6;
+        --font-label: 'JetBrains Mono', monospace;
+        --sidebar-width: 340px; /* サイドバーの幅 */
+    }
 
-      <!-- ▼▼ data-action を追加 ▼▼ -->      
-      <select data-spc-chart-target="select" data-action="change->spc-chart#extractData">
-        <option value="" >カラムを選択してください</option>
-      </select>
+    /* 全体ラッパー（サイドバー展開時のメイン領域縮小用） */
+    .dashboard-wrapper {
+        display: flex;
+        flex: 1;
+        width: 100%;
+        transition: padding-right 0.3s ease;
+        position: relative;
+        min-height: calc(100vh - 140px);
+    }
+    .dashboard-wrapper.sidebar-open {
+        padding-right: var(--sidebar-width);
+    }
+
+    .dashboard-main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 48px;
+        width: 100%;
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-main { padding: 1rem 16px; }
+        .dashboard-wrapper.sidebar-open { padding-right: 0; }
+    }
+
+    /* Tab System */
+    .nav-tabs-custom {
+        border-bottom: none;
+        display: flex;
+        gap: 4px;
+        margin-bottom: 1rem;
+    }
+    .nav-tabs-custom .nav-link {
+        border: 1px solid var(--input-border);
+        border-bottom: none;
+        background: #e9ecef;
+        color: var(--on-surface-variant);
+        font-family: var(--font-label);
+        font-weight: 500;
+        clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%);
+        padding: 10px 40px;
+        margin-right: -10px;
+        transition: background 0.2s;
+    }
+    .nav-tabs-custom .nav-link.active {
+        background: var(--surface-white);
+        color: var(--on-surface);
+        font-weight: 700;
+        z-index: 2;
+        border-bottom: 2px solid var(--surface-white);
+    }
+
+    .graph-container {
+        background: var(--surface-white);
+        border: 1px solid var(--input-border);
+        padding: 2rem;
+        position: relative;
+        min-height: 500px;
+        border-radius: 4px;
+    }
+
+    .control-group {
+        background: white;
+        padding: 0.75rem;
+        border: 1px solid var(--input-border);
+        border-radius: 4px;
+    }
+
+    /* --- サイドバーとトグルボタンのスタイル --- */
+    .custom-sidebar {
+        position: fixed;
+        top: 64px; /* ヘッダーの高さ */
+        right: calc(-1 * var(--sidebar-width));
+        width: var(--sidebar-width);
+        height: calc(100vh - 64px);
+        background-color: #f8f9fa;
+        border-left: 1px solid var(--input-border);
+        transition: right 0.3s ease;
+        z-index: 1040;
+        overflow-y: auto;
+        padding: 1.5rem;
+        box-shadow: -4px 0 15px rgba(0,0,0,0.05);
+    }
+    .sidebar-open .custom-sidebar {
+        right: 0;
+    }
+
+    .sidebar-toggle-btn {
+        position: fixed;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 1060;
+        width: 48px;
+        height: 80px;
+        background-color: #d1d5db;
+        border-radius: 12px 0 0 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+        transition: right 0.3s ease, background-color 0.2s;
+        cursor: pointer;
+        border: none;
+        padding: 0;
+        color: #4b5563;
+    }
+    .sidebar-toggle-btn:hover {
+        background-color: #c1c5cb;
+    }
+    .sidebar-open .sidebar-toggle-btn {
+        right: var(--sidebar-width);
+    }
+</style>
+
+<div class="dashboard-wrapper sidebar-open" id="layoutWrapper" data-controller="spc-chart">
+  
+  <div class="dashboard-main">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="display-6 fw-bold m-0 fs-2">グラフ解析領域</h1>
     </div>
-    <!-- 解析結果を表示するための領域を追加 -->
-    <div class="spc-chart-section">
-      <!-- ▼ SPC計算結果出力用Target群を追加 ▼ -->
-      <div class="spc-results">
-        <ul>
-          <li>平均 (CL): <span data-spc-chart-target="mean"></span></li>
-          <li>標準偏差 (σ): <span data-spc-chart-target="stddev"></span></li>
-          <li>UCL (+3σ): <span data-spc-chart-target="ucl"></span></li>
-          <li>LCL (-3σ): <span data-spc-chart-target="lcl"></span></li>
-          <li>外れ値のインデックス (TEST1): <span data-spc-chart-target="outliers"></span></li>
-        </ul>
+
+    <ul class="nav nav-tabs nav-tabs-custom" id="analysisTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="data-tab" data-bs-toggle="tab" data-bs-target="#data-pane" type="button" role="tab" aria-selected="true">
+          計算データ・プレビュー
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="spc-tab" data-bs-toggle="tab" data-bs-target="#spc-pane" type="button" role="tab" aria-selected="false">
+          SPC管理図
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="other-tab" data-bs-toggle="tab" data-bs-target="#other-pane" type="button" role="tab" aria-selected="false">
+          別グラフ（追加用）
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="analysisTabsContent">
+      <div class="tab-pane fade show active" id="data-pane" role="tabpanel" aria-labelledby="data-tab">
+        <div class="graph-container">
+          <h2 class="h5 mb-4 fw-bold">SPC統計計算結果</h2>
+          <div class="row g-3 mb-4">
+            <div class="col-md-3">
+              <div class="p-3 bg-light border">
+                <span class="text-muted small d-block">平均 (CL)</span>
+                <span data-spc-chart-target="mean" class="fs-4 fw-bold">-</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="p-3 bg-light border">
+                <span class="text-muted small d-block">標準偏差 (σ)</span>
+                <span data-spc-chart-target="stddev" class="fs-4 fw-bold">-</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="p-3 bg-light border">
+                <span class="text-muted small d-block">UCL (+3σ)</span>
+                <span data-spc-chart-target="ucl" class="fs-4 fw-bold">-</span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="p-3 bg-light border">
+                <span class="text-muted small d-block">LCL (-3σ)</span>
+                <span data-spc-chart-target="lcl" class="fs-4 fw-bold">-</span>
+              </div>
+            </div>
+          </div>
+          <div class="mb-4 p-3 bg-light border">
+            <span class="text-muted small d-block mb-1">異常判定外れ値インデックス</span>
+            <span data-spc-chart-target="outliers" class="fw-bold text-danger">-</span>
+          </div>
+          <h3 class="h6 mb-2 fw-bold">解析結果プレビュー</h3>
+          <pre data-spc-chart-target="output" class="bg-light p-3 border mb-0" style="min-height: 120px; font-size: 0.85rem; overflow-y: auto;"></pre>
+        </div>
       </div>
-      <!-- ▲ ここまで ▲ -->
-      <!-- ▼ 今回追加するSPC管理図の描画領域 ▼ -->
-      <h3>SPC管理図</h3>
-      <canvas data-spc-chart-target="canvas" width="800" height="400"></canvas>
 
-      <h3>解析結果プレビュー:</h3>
-      <pre data-spc-chart-target="output" class="spc-chart-preview"></pre>
+      <div class="tab-pane fade" id="spc-pane" role="tabpanel" aria-labelledby="spc-tab">
+        <div class="graph-container d-flex flex-column">
+          <h2 class="h5 fw-bold mb-4">項目別 SPC管理図</h2>
+          <div class="flex-grow-1 d-flex align-items-center justify-content-center w-100" style="min-height: 400px;">
+            <canvas data-spc-chart-target="canvas" style="width: 100%; height: 400px;"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane fade" id="other-pane" role="tabpanel" aria-labelledby="other-tab">
+        <div class="graph-container d-flex align-items-center justify-content-center">
+          <p class="text-muted">ここに第2のグラフ（例：ヒストグラム、パレート図など）を描画します</p>
+        </div>
+      </div>
     </div>
- 
+  </div>
+
+  <aside class="custom-sidebar" id="sidebar">
+    <div class="card border-0 shadow-sm p-4 mb-4" style="background-color: #ffffff;">
+      <h2 class="h5 mb-3 fw-bold">データ解析設定</h2>
+      <div class="row g-3">
+        <div class="col-12">
+          <div class="control-group">
+            <label class="form-label small fw-bold mb-2">CSVファイル読み込み</label>
+            <input type="file" accept=".csv" class="form-control form-control-sm" data-action="change->spc-chart#handleFileUpload">
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="control-group">
+            <label class="form-label small fw-bold mb-2">Y軸対象カラム選択</label>
+            <select class="form-select form-select-sm" data-spc-chart-target="select" data-action="change->spc-chart#extractData">
+              <option value="">カラムを選択してください</option>
+              <option value="id">id</option>
+              <option value="timestamp">timestamp</option>
+              <option value="subgroup_id">subgroup_id</option>
+              <option value="sample_index">sample_index</option>
+              <option value="measured_value">measured_value</option>
+              <option value="note">note</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <button class="sidebar-toggle-btn" id="sidebarToggle" type="button">
+    <span class="material-symbols-outlined" id="toggleIcon" style="font-size: 28px;">chevron_right</span>
+  </button>
 </div>
+
+<script>
+  document.addEventListener("turbo:load", function() {
+    const wrapper = document.getElementById('layoutWrapper');
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const toggleIcon = document.getElementById('toggleIcon');
+
+    if (toggleBtn && wrapper) {
+      // 既存のイベントリスナーが重複しないよう要素をクローンして置き換え
+      const newBtn = toggleBtn.cloneNode(true);
+      toggleBtn.parentNode.replaceChild(newBtn, toggleBtn);
+
+      newBtn.addEventListener('click', function() {
+        const isOpen = wrapper.classList.toggle('sidebar-open');
+        const icon = document.getElementById('toggleIcon');
+        if (icon) {
+          icon.textContent = isOpen ? 'chevron_right' : 'chevron_left';
+        }
+      });
+    }
+  });
+</script>

@@ -206,7 +206,8 @@ static targets = [ "output", "select", "mean", "stddev", "ucl", "lcl", "outliers
         ]
       },
       options: {
-        responsive: true
+        responsive: true,
+        maintainAspectRatio: false
       }
     });
 
