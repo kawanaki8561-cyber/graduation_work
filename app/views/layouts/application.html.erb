@@ -1,16 +1,94 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
   <head>
-    <title>App</title>
+    <title>AnalyticsApp</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <!-- Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <!-- Google Fonts: Inter for headings/body, JetBrains Mono for labels -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+
+    <style>
+        :root {
+            --bs-header-yellow: #fce58d;
+        }
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            font-family: 'Inter', sans-serif;
+        }
+        main {
+            flex: 1 0 auto;
+        }
+        .bg-header-yellow {
+            background-color: var(--bs-header-yellow) !important;
+        }
+        .logo-img {
+            max-width: 60px;
+            max-height: 50px;
+            object-fit: contain;
+        }
+        .form-control {
+            border: 1px solid #000 !important;
+            border-radius: 0 !important;
+        }
+        .form-control:focus {
+            box-shadow: 0 0 0 0.25rem rgba(108, 117, 125, 0.25);
+            border-color: #000;
+        }
+        .btn-custom-gray {
+            background-color: #e9ecef !important;
+            border-radius: 0 !important;
+            border: none !important;
+            color: #000 !important;
+            padding: 0.5rem 1.5rem;
+        }
+        .btn-custom-gray:hover {
+            background-color: #dee2e6 !important;
+        }
+        .btn-large-custom {
+            padding: 0.5rem 3rem !important;
+            font-size: 1.25rem !important;
+        }
+        .letter-spacing-lg {
+            letter-spacing: 0.15em;
+        }
+        .footer-link {
+            text-decoration: none;
+            color: #6c757d;
+        }
+        .footer-link:hover {
+            color: #6e5d13;
+        }
+        .label-style {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+    </style>
   </head>
 
   <body>
-    <%= yield %>
+    <!-- 共通ヘッダー -->
+    <%= render 'shared/header' %>
+
+    <!-- メインコンテンツ -->
+    <main class="container py-5 mt-5 mb-5">
+      <%= yield %>
+    </main>
+
+    <!-- 共通フッター -->
+    <%= render 'shared/footer' %>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
