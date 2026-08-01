@@ -4,12 +4,12 @@ require 'rails_helper'
 
 RSpec.describe 'SPC管理図描画フロー', type: :system do
   # テスト用のユーザーデータをFactoryBotで生成
-  let(:user) { create(:user) } 
+  let(:user) { create(:user) }
 
   before do
     # Deviseを用いたログイン処理
     visit new_user_session_path # ログイン画面へアクセス
-    
+
     # ログインフォームの入力
     fill_in 'Email', with: user.email
     fill_in 'password', with: user.password
@@ -24,9 +24,9 @@ RSpec.describe 'SPC管理図描画フロー', type: :system do
 
     # 2. CSVファイルのアップロード
     csv_path = Rails.root.join('spec/fixtures/files/winequality-white.csv')
-    
+
     # inputタグの id="csv_file" に対してアタッチ
-    attach_file 'csv_file', csv_path 
+    attach_file 'csv_file', csv_path
 
     # 3. カラムの選択
     # selectタグの id="select_column_name" から、CSVに存在するカラムを選択
