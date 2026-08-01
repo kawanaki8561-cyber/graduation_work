@@ -14,11 +14,13 @@ RSpec.describe 'SPC管理図描画フロー', type: :system do
     fill_in 'Email', with: user.email
     fill_in 'password', with: user.password
     click_button 'ログイン'
+
+    expect(page).to have_content 'CSVファイル読み込み'
   end
 
   it 'CSVをアップロードし、カラムを選択すると管理図が描画されること' do
     # 1. 解析対象のページ（ホーム画面）へアクセス
-    visit '/' 
+    visit root_path
 
     # 2. CSVファイルのアップロード
     csv_path = Rails.root.join('spec/fixtures/files/winequality-white.csv')
@@ -43,6 +45,7 @@ RSpec.describe 'SPC管理図描画フロー', type: :system do
     end
 
     # 5. グラフ（Canvas）の描画検証
+    click_button 'SPC管理図'
     # <canvas id="controlChart" data-spc-chart-target="canvas"> が存在することを確認
     expect(page).to have_css('canvas[data-spc-chart-target="canvas"]')
   end

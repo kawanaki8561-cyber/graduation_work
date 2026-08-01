@@ -222,14 +222,14 @@
       <div class="row g-3">
         <div class="col-12">
           <div class="control-group">
-            <label class="form-label small fw-bold mb-2">CSVファイル読み込み</label>
-            <input type="file" accept=".csv" class="form-control form-control-sm" data-action="change->spc-chart#handleFileUpload">
+            <label class="form-label small fw-bold mb-2" for="csv_file">CSVファイル読み込み</label>
+            <input type="file" id="csv_file" accept=".csv" class="form-control form-control-sm"  data-action="change->spc-chart#handleFileUpload">
           </div>
         </div>
         <div class="col-12">
           <div class="control-group">
             <label class="form-label small fw-bold mb-2">Y軸対象カラム選択</label>
-            <select class="form-select form-select-sm" data-spc-chart-target="select" data-action="change->spc-chart#extractData">
+            <select id="select_column_name" class="form-select form-select-sm" data-spc-chart-target="select" data-action="change->spc-chart#extractData">
               <option value="">カラムを選択してください</option>
               <option value="id">id</option>
               <option value="timestamp">timestamp</option>
