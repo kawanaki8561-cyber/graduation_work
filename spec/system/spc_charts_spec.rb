@@ -12,8 +12,8 @@ RSpec.describe 'SPC管理図描画フロー', type: :system do
     
     # ログインフォームの入力
     fill_in 'Email', with: user.email
-    fill_in 'Password', with: user.password
-    click_button 'Log in'
+    fill_in 'password', with: user.password
+    click_button 'ログイン'
   end
 
   it 'CSVをアップロードし、カラムを選択すると管理図が描画されること' do
