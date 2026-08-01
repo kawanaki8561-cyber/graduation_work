@@ -15,9 +15,12 @@ group :development, :test do
   gem 'debug', platforms: %i[mri]
   gem 'factory_bot_rails'
   gem 'rspec-rails', '~> 7.0'
+  gem 'capybara' # E2Eテスト用のDSL
+  gem 'selenium-webdriver' # ブラウザ操作用ドライバ
   gem 'rubocop', require: false
-  gem 'rubocop-performance', require: false # Issue記載の要件に準拠
+  gem 'rubocop-performance', require: false 
   gem 'rubocop-rails', require: false
+
 end
 
 group :development do
