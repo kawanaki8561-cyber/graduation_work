@@ -18,7 +18,6 @@ require 'rspec/rails'
 # ★追加: Selenium WebDriverを読み込む
 require 'selenium-webdriver'
 
-
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -45,17 +44,16 @@ rescue ActiveRecord::PendingMigrationError => e
 end
 
 Capybara.register_driver :arm_headless_chrome do |app|
-
   options = Selenium::WebDriver::Chrome::Options.new
-  options.binary = '/usr/bin/chromium'             # Docker内にインストールしたChromiumのパス
+  options.binary = '/usr/bin/chromium' # Docker内にインストールしたChromiumのパス
 
-  options.add_argument('--headless=new')               # バックグラウンドで起動
+  options.add_argument('--headless=new') # バックグラウンドで起動
   options.add_argument('--no-sandbox')             # サンドボックス無効化（Dockerで必須）
   options.add_argument('--disable-dev-shm-usage')  # メモリ制限回避（Dockerで必須）
   # options.add_argument('--disable-gpu')
   # options.add_argument('--window-size=1400,1400')
 
-  #driven_by(:selenium, using: :headless_chrome)
+  # driven_by(:selenium, using: :headless_chrome)
   service = Selenium::WebDriver::Service.chrome(path: '/usr/bin/chromedriver')
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options, service: service)
 end
