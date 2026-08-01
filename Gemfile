@@ -12,15 +12,14 @@ gem 'sprockets-rails'
 gem 'stimulus-rails'
 
 group :development, :test do
+  gem 'capybara' # E2Eテスト用のDSL
   gem 'debug', platforms: %i[mri]
   gem 'factory_bot_rails'
   gem 'rspec-rails', '~> 7.0'
-  gem 'capybara' # E2Eテスト用のDSL
-  gem 'selenium-webdriver' # ブラウザ操作用ドライバ
   gem 'rubocop', require: false
-  gem 'rubocop-performance', require: false 
+  gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
-
+  gem 'selenium-webdriver' # ブラウザ操作用ドライバ
 end
 
 group :development do
