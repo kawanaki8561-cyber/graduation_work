@@ -1,7 +1,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
 <style>
-
     /* 画面幅の制限解除・スタイル整列 */
     main.container {
         max-width: 100% !important;
@@ -27,7 +26,8 @@
         width: 100%;
         transition: padding-right 0.3s ease;
         position: relative;
-        min-height: calc(100vh - 140px);
+        padding-top: 64px; /* ヘッダーの下にコンテンツを配置 */
+        min-height: calc(100vh - 64px);
     }
     .dashboard-wrapper.sidebar-open {
         padding-right: var(--sidebar-width);
@@ -133,19 +133,43 @@
     .sidebar-open .sidebar-toggle-btn {
         right: var(--sidebar-width);
     }
+
+    /* --- 【追加】インラインスタイルから抽出したCSS --- */
+    .analysis-output-preview {
+        min-height: 120px;
+        font-size: 0.85rem;
+        overflow-y: auto;
+    }
+
+    .spc-canvas-wrapper {
+        min-height: 400px;
+    }
+
+    .spc-chart-canvas {
+        width: 100%;
+        height: 400px;
+    }
+
+    .sidebar-card-bg {
+        background-color: #ffffff;
+    }
+
+    .icon-lg {
+        font-size: 28px;
+    }
 </style>
 
 <div class="dashboard-wrapper sidebar-open" id="layoutWrapper" data-controller="spc-chart">
   
   <div class="dashboard-main">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h1 class="display-6 fw-bold m-0 fs-2">グラフ解析領域</h1>
+      <h1 class="display-6 fw-bold m-0 fs-2"></h1>
     </div>
 
     <ul class="nav nav-tabs nav-tabs-custom" id="analysisTabs" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="data-tab" data-bs-toggle="tab" data-bs-target="#data-pane" type="button" role="tab" aria-selected="true">
-          計算データ・プレビュー
+          STEP1: 計算データ
         </button>
       </li>
       <li class="nav-item" role="presentation">
@@ -195,15 +219,15 @@
             <span data-spc-chart-target="outliers" class="fw-bold text-danger">-</span>
           </div>
           <h3 class="h6 mb-2 fw-bold">解析結果プレビュー</h3>
-          <pre data-spc-chart-target="output" class="bg-light p-3 border mb-0" style="min-height: 120px; font-size: 0.85rem; overflow-y: auto;"></pre>
+          <pre data-spc-chart-target="output" class="bg-light p-3 border mb-0 analysis-output-preview"></pre>
         </div>
       </div>
 
       <div class="tab-pane fade" id="spc-pane" role="tabpanel" aria-labelledby="spc-tab">
         <div class="graph-container d-flex flex-column">
           <h2 class="h5 fw-bold mb-4">項目別 SPC管理図</h2>
-          <div class="flex-grow-1 d-flex align-items-center justify-content-center w-100" style="min-height: 400px;">
-            <canvas data-spc-chart-target="canvas" style="width: 100%; height: 400px;"></canvas>
+          <div class="flex-grow-1 d-flex align-items-center justify-content-center w-100 spc-canvas-wrapper">
+            <canvas data-spc-chart-target="canvas" class="spc-chart-canvas"></canvas>
           </div>
         </div>
       </div>
@@ -217,13 +241,13 @@
   </div>
 
   <aside class="custom-sidebar" id="sidebar">
-    <div class="card border-0 shadow-sm p-4 mb-4" style="background-color: #ffffff;">
+    <div class="card border-0 shadow-sm p-4 mb-4 sidebar-card-bg">
       <h2 class="h5 mb-3 fw-bold">データ解析設定</h2>
       <div class="row g-3">
         <div class="col-12">
           <div class="control-group">
             <label class="form-label small fw-bold mb-2" for="csv_file">CSVファイル読み込み</label>
-            <input type="file" id="csv_file" accept=".csv" class="form-control form-control-sm"  data-action="change->spc-chart#handleFileUpload">
+            <input type="file" id="csv_file" accept=".csv" class="form-control form-control-sm" data-action="change->spc-chart#handleFileUpload">
           </div>
         </div>
         <div class="col-12">
@@ -245,7 +269,7 @@
   </aside>
 
   <button class="sidebar-toggle-btn" id="sidebarToggle" type="button">
-    <span class="material-symbols-outlined" id="toggleIcon" style="font-size: 28px;">chevron_right</span>
+    <span class="material-symbols-outlined icon-lg" id="toggleIcon">chevron_right</span>
   </button>
 </div>
 
@@ -256,7 +280,6 @@
     const toggleIcon = document.getElementById('toggleIcon');
 
     if (toggleBtn && wrapper) {
-      // 既存のイベントリスナーが重複しないよう要素をクローンして置き換え
       const newBtn = toggleBtn.cloneNode(true);
       toggleBtn.parentNode.replaceChild(newBtn, toggleBtn);
 
