@@ -1,7 +1,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
 <style>
-
     /* 画面幅の制限解除・スタイル整列 */
     main.container {
         max-width: 100% !important;
@@ -27,7 +26,8 @@
         width: 100%;
         transition: padding-right 0.3s ease;
         position: relative;
-        min-height: calc(100vh - 140px);
+        padding-top: 64px; /* ヘッダーの下にコンテンツを配置 */
+        min-height: calc(100vh - 64px);
     }
     .dashboard-wrapper.sidebar-open {
         padding-right: var(--sidebar-width);
@@ -133,29 +133,53 @@
     .sidebar-open .sidebar-toggle-btn {
         right: var(--sidebar-width);
     }
+
+    /* --- 【追加】インラインスタイルから抽出したCSS --- */
+    .analysis-output-preview {
+        min-height: 120px;
+        font-size: 0.85rem;
+        overflow-y: auto;
+    }
+
+    .spc-canvas-wrapper {
+        min-height: 400px;
+    }
+
+    .spc-chart-canvas {
+        width: 100%;
+        height: 400px;
+    }
+
+    .sidebar-card-bg {
+        background-color: #ffffff;
+    }
+
+    .icon-lg {
+        font-size: 28px;
+    }
 </style>
 
 <div class="dashboard-wrapper sidebar-open" id="layoutWrapper" data-controller="spc-chart">
   
   <div class="dashboard-main">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h1 class="display-6 fw-bold m-0 fs-2">グラフ解析領域</h1>
+      <h1 class="display-6 fw-bold m-0 fs-2"></h1>
     </div>
 
     <ul class="nav nav-tabs nav-tabs-custom" id="analysisTabs" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="data-tab" data-bs-toggle="tab" data-bs-target="#data-pane" type="button" role="tab" aria-selected="true">
-          計算データ・プレビュー
+          STEP2: 計算データ
         </button>
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="spc-tab" data-bs-toggle="tab" data-bs-target="#spc-pane" type="button" role="tab" aria-selected="false">
-          SPC管理図
+          STEP3: SPC管理図
         </button>
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="other-tab" data-bs-toggle="tab" data-bs-target="#other-pane" type="button" role="tab" aria-selected="false">
-          別グラフ（追加用）
+          STEP4: ComingSoon
         </button>
       </li>
     </ul>
@@ -164,6 +188,13 @@
       <div class="tab-pane fade show active" id="data-pane" role="tabpanel" aria-labelledby="data-tab">
         <div class="graph-container">
           <h2 class="h5 mb-4 fw-bold">SPC統計計算結果</h2>
+
+          <!-- 【追加】選択中の解析項目名を表示する枠 -->
+          <div class="text-muted small mb-4">
+            選択中の解析項目：<span data-spc-chart-target="selectedColumnName" class="fw-bold text-dark">未選択</span>
+          </div>
+          
+          <!-- 統計値 4項目 -->
           <div class="row g-3 mb-4">
             <div class="col-md-3">
               <div class="p-3 bg-light border">
@@ -190,20 +221,45 @@
               </div>
             </div>
           </div>
-          <div class="mb-4 p-3 bg-light border">
-            <span class="text-muted small d-block mb-1">異常判定外れ値インデックス</span>
-            <span data-spc-chart-target="outliers" class="fw-bold text-danger">-</span>
+          
+          <!-- 【変更】異常判定件数を TEST1 と TEST3 の2枠に分割 -->
+          <div class="row g-3 mb-0">
+            <div class="col-md-6">
+              <div class="p-3 bg-light border">
+                <span class="text-muted small d-block mb-1">I管理TEST1異常件数 (±3σ超過)</span>
+                <!-- 【変更】Target名を test1Outliers に変更 -->
+                <span data-spc-chart-target="test1Outliers" class="fs-4 fw-bold text-danger">-</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-3 bg-light border">
+                <span class="text-muted small d-block mb-1">I管理TEST3異常件数 (6点連続上昇/下降)</span>
+                <!-- 【追加】Target名 test3Outliers を追加 -->
+                <span data-spc-chart-target="test3Outliers" class="fs-4 fw-bold text-danger">-</span>
+              </div>
+            </div>
           </div>
-          <h3 class="h6 mb-2 fw-bold">解析結果プレビュー</h3>
-          <pre data-spc-chart-target="output" class="bg-light p-3 border mb-0" style="min-height: 120px; font-size: 0.85rem; overflow-y: auto;"></pre>
+
         </div>
       </div>
 
       <div class="tab-pane fade" id="spc-pane" role="tabpanel" aria-labelledby="spc-tab">
         <div class="graph-container d-flex flex-column">
           <h2 class="h5 fw-bold mb-4">項目別 SPC管理図</h2>
-          <div class="flex-grow-1 d-flex align-items-center justify-content-center w-100" style="min-height: 400px;">
-            <canvas data-spc-chart-target="canvas" style="width: 100%; height: 400px;"></canvas>
+
+          <div class="alert alert-light border small text-muted mb-4 py-2 px-3">
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <span class="material-symbols-outlined fs-6 text-primary">info</span>
+              <span class="fw-bold text-dark">管理図の読み方</span>
+            </div>
+            <ul class="mb-0 ps-3">
+              <li><strong>横軸：</strong> データの収集順序・時間経過（左側：古いデータ ➔ 右側：新しいデータ）</li>
+              <li><strong>縦軸：</strong> 選択された項目の測定値</li>
+            </ul>
+          </div>
+
+          <div class="flex-grow-1 d-flex align-items-center justify-content-center w-100 spc-canvas-wrapper">
+            <canvas data-spc-chart-target="canvas" class="spc-chart-canvas"></canvas>
           </div>
         </div>
       </div>
@@ -217,13 +273,13 @@
   </div>
 
   <aside class="custom-sidebar" id="sidebar">
-    <div class="card border-0 shadow-sm p-4 mb-4" style="background-color: #ffffff;">
-      <h2 class="h5 mb-3 fw-bold">データ解析設定</h2>
+    <div class="card border-0 shadow-sm p-4 mb-4 sidebar-card-bg">
+      <h2 class="h5 mb-3 fw-bold">STEP1:データ解析設定</h2>
       <div class="row g-3">
         <div class="col-12">
           <div class="control-group">
             <label class="form-label small fw-bold mb-2" for="csv_file">CSVファイル読み込み</label>
-            <input type="file" id="csv_file" accept=".csv" class="form-control form-control-sm"  data-action="change->spc-chart#handleFileUpload">
+            <input type="file" id="csv_file" accept=".csv" class="form-control form-control-sm" data-action="change->spc-chart#handleFileUpload">
           </div>
         </div>
         <div class="col-12">
@@ -245,7 +301,7 @@
   </aside>
 
   <button class="sidebar-toggle-btn" id="sidebarToggle" type="button">
-    <span class="material-symbols-outlined" id="toggleIcon" style="font-size: 28px;">chevron_right</span>
+    <span class="material-symbols-outlined icon-lg" id="toggleIcon">chevron_right</span>
   </button>
 </div>
 
@@ -256,7 +312,6 @@
     const toggleIcon = document.getElementById('toggleIcon');
 
     if (toggleBtn && wrapper) {
-      // 既存のイベントリスナーが重複しないよう要素をクローンして置き換え
       const newBtn = toggleBtn.cloneNode(true);
       toggleBtn.parentNode.replaceChild(newBtn, toggleBtn);
 
