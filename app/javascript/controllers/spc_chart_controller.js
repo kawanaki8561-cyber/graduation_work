@@ -5,19 +5,17 @@ import SpcCalculator from "../utils/spc_calculator"
 import ChartRenderer from "../utils/chart_renderer"
 
 export default class extends Controller {
-  static targets = [ "output", "select", "mean", "stddev", "ucl", "lcl", "outliers", "canvas" ]
+  // 【変更】targets に "selectedColumnName" を追加
+  static targets = [ "select", "selectedColumnName", "mean", "stddev", "ucl", "lcl", "test1Outliers", "test3Outliers", "canvas" ]
 
   connect() {
     this.csvData = []
-    // ChartRenderer のインスタンスを保持する変数
     this.chartRenderer = null
   }
 
   handleFileUpload(event) {
     const file = event.target.files.item(0);
     if (!file) return;
-
-    this.outputTarget.textContent = "解析中...";
 
     Papa.parse(file, {
       header: true,
@@ -30,18 +28,15 @@ export default class extends Controller {
         console.log("解析完了:", results);
 
         if (results.errors.length > 0) {
-          console.warn("エラー詳細:", results.errors);
-          this.outputTarget.textContent = "警告/エラーが発生しました:\n" + JSON.stringify(results.errors, null, 2);
+          console.warn("警告/エラー詳細:", results.errors);
           return;
         }
 
         this.csvData = results.data;
-        this.outputTarget.textContent = JSON.stringify(results.data, null, 2);
         this.buildSelectOptions(results.meta.fields);
       },
 
       error: (error) => {
-        this.outputTarget.textContent = "CSVの読み込みに失敗しました。";
         console.error("CSV解析エラー:", error);
       }
     });
@@ -60,6 +55,12 @@ export default class extends Controller {
 
   extractData(event) {
     const selectedColumn = event.target.value;
+    
+    // 【追加】選択された項目名を HTML へ反映（未選択の場合は「未選択」）
+    if (this.hasSelectedColumnNameTarget) {
+      this.selectedColumnNameTarget.textContent = selectedColumn || "未選択";
+    }
+
     if (!selectedColumn) return;
 
     const columnData = this.csvData.map(row => row[selectedColumn]);
@@ -77,7 +78,7 @@ export default class extends Controller {
       return;
     }
 
-    const { cl, sigma, ucl, lcl, outlierIndices } = spcResults;
+    const { cl, sigma, ucl, lcl, outlierIndices, test3Indices } = spcResults;
 
     // 2. 画面（ViewのTarget）へ結果を出力
     if (this.hasMeanTarget) this.meanTarget.textContent = cl.toFixed(3);
@@ -85,8 +86,28 @@ export default class extends Controller {
     if (this.hasUclTarget) this.uclTarget.textContent = ucl.toFixed(3);
     if (this.hasLclTarget) this.lclTarget.textContent = lcl.toFixed(3);
 
-    if (this.hasOutliersTarget) {
-      this.outliersTarget.textContent = outlierIndices.length > 0 ? outlierIndices.join(', ') : "なし";
+    // TEST1 異常件数の表示
+    if (this.hasTest1OutliersTarget) {
+      const count1 = outlierIndices.length;
+      if (count1 > 0) {
+        this.test1OutliersTarget.textContent = `${count1}件`;
+        this.test1OutliersTarget.className = "fs-4 fw-bold text-danger";
+      } else {
+        this.test1OutliersTarget.textContent = "0件（正常）";
+        this.test1OutliersTarget.className = "fs-4 fw-bold text-success";
+      }
+    }
+
+    // TEST3 異常件数の表示
+    if (this.hasTest3OutliersTarget) {
+      const count3 = test3Indices.length;
+      if (count3 > 0) {
+        this.test3OutliersTarget.textContent = `${count3}件`;
+        this.test3OutliersTarget.className = "fs-4 fw-bold text-danger";
+      } else {
+        this.test3OutliersTarget.textContent = "0件（正常）";
+        this.test3OutliersTarget.className = "fs-4 fw-bold text-success";
+      }
     }
 
     // 3. ChartRenderer を使ってグラフを描画
@@ -94,6 +115,12 @@ export default class extends Controller {
       const ctx = this.canvasTarget.getContext('2d');
       this.chartRenderer = new ChartRenderer(ctx);
       this.chartRenderer.draw(spcResults);
+    }
+  }
+
+  disconnect() {
+    if (this.chartRenderer && this.chartRenderer.chartInstance) {
+      this.chartRenderer.chartInstance.destroy();
     }
   }
 }
