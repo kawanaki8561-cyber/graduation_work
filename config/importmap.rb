@@ -19,4 +19,4 @@ pin 'papaparse' # @5.5.4
 pin 'simple-statistics' # @7.9.3
 
 # 【追加】utilsフォルダ内の自作ファイルを本番環境でも読み込ませるための設定
-pin_all_from "app/javascript/utils", under: "utils"
+pin_all_from 'app/javascript/utils', under: 'utils'
