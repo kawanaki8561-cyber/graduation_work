@@ -1,8 +1,10 @@
 // app/javascript/controllers/spc_chart_controller.js
 import { Controller } from "@hotwired/stimulus"
 import Papa from "papaparse"
-import SpcCalculator from "../utils/spc_calculator"
-import ChartRenderer from "../utils/chart_renderer"
+// import SpcCalculator from "../utils/spc_calculator"
+// import ChartRenderer from "../utils/chart_renderer"
+import SpcCalculator from "utils/spc_calculator"
+import ChartRenderer from "utils/chart_renderer"
 
 export default class extends Controller {
   // 【変更】targets に "selectedColumnName" を追加
