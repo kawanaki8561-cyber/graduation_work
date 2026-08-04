@@ -73,6 +73,12 @@
             font-size: 1.25rem;
             margin-bottom: 0.25rem;
         }
+        /* アラート用のカスタムスタイル（テーマの黒枠＆角丸なしを継承） */
+        .alert-custom {
+            border: 1px solid #000 !important;
+            border-radius: 0 !important;
+            color: #000 !important;
+        }
     </style>
   </head>
 
@@ -82,7 +88,24 @@
 
     <!-- メインコンテンツ -->
     <main class="container py-5 mt-5 mb-5">
-      <%= yield %>
+
+        <!-- ========================================== -->
+        <!-- --- STEP 5: ここから追記：フラッシュメッセージ表示 --- -->
+        <!-- ========================================== -->
+        <% if flash[:notice] %>
+        <div class="alert alert-success alert-custom mb-4" role="alert">
+            <%= flash[:notice] %>
+        </div>
+        <% end %>
+
+        <% if flash[:alert] %>
+        <div class="alert alert-danger alert-custom mb-4" role="alert">
+            <%= flash[:alert] %>
+        </div>
+        <% end %>
+        <!-- ========================================== -->
+
+        <%= yield %>
     </main>
 
     <!-- 共通フッター -->

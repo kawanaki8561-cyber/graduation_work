@@ -1,0 +1,39 @@
+ja:
+  # 1. Deviseのエラーヘッダーや、Rails標準のシステムエラーメッセージ
+  errors:
+    messages:
+      not_saved:
+        one: "1つのエラーにより、%{resource}を保存できませんでした。"
+        other: "%{count}つのエラーにより、%{resource}を保存できませんでした。"
+      taken: "はすでに使用されています"
+      blank: "を入力してください"
+      too_short: "は%{count}文字以上で入力してください"
+      confirmation: "と%{attribute}の入力が一致しません"
+      invalid: "は不正な値です"
+
+  # 2. Active Record（データベース保存時）のエラー文やモデル・属性の日本語定義
+  activerecord:
+    errors:
+      messages:
+        record_invalid: "バリデーションに失敗しました: %{errors}"
+        taken: "はすでに登録されています"
+        blank: "を入力してください"
+        too_short: "は%{count}文字以上で入力してください"
+        confirmation: "と%{attribute}の入力が一致しません"
+    models:
+      user: "ユーザー"
+    attributes:
+      user:
+        username: "ユーザー名"
+        email: "メールアドレス"
+        password: "パスワード"
+        password_confirmation: "パスワード（確認用）"
+
+  # 3. Active Model（メモリ上のバリデーション）の共通エラー文
+  activemodel:
+    errors:
+      messages:
+        blank: "を入力してください"
+        invalid: "は不正な値です"
+        too_short: "は%{count}文字以上で入力してください"
+        confirmation: "と%{attribute}の入力が一致しません"
