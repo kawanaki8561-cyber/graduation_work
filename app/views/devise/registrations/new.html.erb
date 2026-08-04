@@ -1,34 +1,67 @@
-<h2>Sign up</h2>
+<div class="container py-5 mt-5 mb-5">
+  <div class="row justify-content-center mt-5">
+    <div class="col-12 col-lg-10 d-flex flex-column flex-md-row align-items-center justify-content-center gap-5 mt-5">
+      
+      <!-- Left Column: Illustration Logo (イラストロゴ領域) -->
+      <div class="col-md-5 d-flex justify-content-center">
+        <img alt="AnalyticsApp Logo" class="img-fluid" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSIPb5jvaPcGkmUsmnvnvAqK98PIK9X0_-DdpxQpgg-lbEkDp0S_qzc0qr4BqL2d032DUbxz9ve11k13CBGXZ6bGIf15rySrMPm7QeADSSRHTORGwI-m7KEtaHCTpanVJODMBKAwVVlfMmIM6l6pA8eyR7eaXlklmYeTKsR-bjVVBVwXwQYbASHMiebvT5WnyVnEqjpPF1enGVEgXk4rZX9x4bOdQEILMPaRd21EDgdIb2WSacv9aEXGldh29wn5JnyA" style="max-width: 300px;"/>
+      </div>
+      
+      <!-- Right Column: Devise Form (フォーム領域) -->
+      <div class="col-md-6">
+        <!-- 1. I18nによるタイトル解決 -->
+        <h1 class="text-center text-md-start mb-4 fw-normal display-6 letter-spacing-lg">
+          <%= t('devise.shared.links.sign_up') %>
+        </h1>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+        <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+          <!-- バリデーションエラーメッセージの表示箇所 -->
+          <div class="mb-3">
+            <%= render "devise/shared/error_messages", resource: resource %>
+          </div>
 
-  <div class="field">
-    <%= f.label :username %><br />
-    <%= f.text_field :username %>
+          <!-- 2. ユーザー名入力（I18nによる自動ラベル解決） -->
+          <div class="mb-3">
+            <%= f.label :username, class: "form-label label-style" %>
+            <%= f.text_field :username, autofocus: true, placeholder: "山田 太郎", required: true, class: "form-control form-control-lg" %>
+          </div>
+
+          <!-- 3. メールアドレス入力（I18nによる自動ラベル解決） -->
+          <div class="mb-3">
+            <%= f.label :email, class: "form-label label-style" %>
+            <%= f.email_field :email, autocomplete: "email", placeholder: "name@company.com", required: true, class: "form-control form-control-lg" %>
+          </div>
+
+          <!-- 4. パスワード入力（I18nによる自動ラベル解決 ＆ 最小文字数表示） -->
+          <div class="mb-3">
+            <%= f.label :password, class: "form-label label-style" %>
+            <% if @minimum_password_length %>
+              <small class="text-muted">(最小 <%= @minimum_password_length %> 文字)</small>
+            <% end %>
+            <%= f.password_field :password, autocomplete: "new-password", placeholder: "••••••••", required: true, class: "form-control form-control-lg" %>
+          </div>
+
+          <!-- 5. パスワード確認用入力（I18nによる自動ラベル解決） -->
+          <div class="mb-4">
+            <%= f.label :password_confirmation, class: "form-label label-style" %>
+            <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "••••••••", required: true, class: "form-control form-control-lg" %>
+          </div>
+
+          <!-- 6. 送信ボタン（I18nによるテキスト解決） -->
+          <div class="d-flex justify-content-end mt-4">
+            <%= f.submit t('devise.shared.links.sign_up'), class: "btn btn-custom-gray btn-large-custom fw-bold" %>
+          </div>
+        <% end %>
+
+        <!-- 7. ログイン画面への遷移リンク（I18nによるテキスト解決） -->
+        <div class="mt-5 text-center text-md-start">
+          <p class="text-secondary">
+            すでにアカウントをお持ちですか？ 
+            <%= link_to t('devise.shared.links.sign_in'), new_session_path(resource_name), class: "text-dark fw-bold text-decoration-underline" %>
+          </p>
+        </div>
+      </div>
+      
+    </div>
   </div>
-
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password %>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Sign up" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>
