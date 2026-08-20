@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 ruby '3.2.2'
 
 gem 'devise', '~> 4.9'
+gem 'devise-guests', require: 'devise-guests'
 gem 'importmap-rails'
 gem 'mysql2', '~> 0.5'
 gem 'puma', '>= 5.0'

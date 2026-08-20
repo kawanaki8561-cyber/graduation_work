@@ -39,7 +39,7 @@ export default class extends Controller {
       },
 
       error: (error) => {
-        console.error("CSV解析エラー:", error);
+        alert(`CSV解析エラー: ${error.message || error}`);
       }
     });
   }
