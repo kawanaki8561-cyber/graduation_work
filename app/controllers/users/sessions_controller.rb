@@ -19,9 +19,29 @@ class Users::SessionsController < Devise::SessionsController
   # end
 
   def guest_sign_in
-    user = User.guest
+    # ゲストユーザーを取得または作成
+    user = guest_user
+    # Deviseのサインインメソッドでゲストユーザーをログイン状態にする
     sign_in user
-    redirect_to root_path, notice:'ゲストユーザーとしてサインしました'
+    
+    flash[:notice] = "ゲストユーザーとしてログインしました（お試し中）。"
+
+    redirect_to root_path, status: :see_other
+  end
+
+  def create
+    # ログイン前に、現在のセッションに紐づいているゲストユーザーを一時保存
+    handing_over_guest = guest_user if session[:guest_user_id]
+
+    # Deviseデフォルトの新規登録処理を実行
+    super do |user|
+      # 登録（保存）が成功し、かつ事前に一時ゲストが存在していた場合、データを本ユーザーに引き継ぐ
+      if handing_over_guest && handing_over_guest != user
+        logging_in(handing_over_guest, user) #データの引継ぎ
+        handing_over_guest.destroy # 引き継ぎ後にゲストレコードを削除
+        session[:guest_user_id] = nil # ゲストセッションのクリア
+      end
+    end
   end
 
   # protected
