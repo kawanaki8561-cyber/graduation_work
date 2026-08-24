@@ -1,4 +1,3 @@
-frozen_string_literal: true
 class ApplicationController < ActionController::Base
 
   before_action :configure_permitted_parameters, if: :devise_controller?
@@ -31,6 +30,15 @@ class ApplicationController < ActionController::Base
 
     end
 
+  end
+  
+  # 現在のセッションに関連付けられたゲストユーザーを返す（なければ作成する）
+  def guest_user(with_retry = true)
+    @guest_user ||= User.find(session[:guest_user_id] ||= create_guest_user.id)
+  rescue ActiveRecord::RecordNotFound
+    # データベースからレコードが削除されていた場合のセーフティ
+    session[:guest_user_id] = nil
+    with_retry ? guest_user(false) : nil
   end
 
   protected
@@ -66,7 +74,7 @@ class ApplicationController < ActionController::Base
   end
 
   def logging_in(guest_user, current_user)
-    guest_user.posts.update_all(user_id: current_user.id)
+    #guest_user.posts.update_all(user_id: current_user.id)
   end
 
   def configure_permitted_parameters
