@@ -1,15 +1,13 @@
 class ApplicationController < ActionController::Base
-
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   before_action :authenticate_user!
 
   helper_method :current_or_guest_user
 
-  #ログインユーザー、またはゲストユーザーを返すメインメソッド
+  # ログインユーザー、またはゲストユーザーを返すメインメソッド
 
   def current_or_guest_user
-
     if current_user
 
       if session[:guest_user_id] && session[:guest_user_id] != current_user.id
@@ -29,11 +27,10 @@ class ApplicationController < ActionController::Base
       guest_user
 
     end
-
   end
-  
+
   # 現在のセッションに関連付けられたゲストユーザーを返す（なければ作成する）
-  def guest_user(with_retry = true)
+  def guest_user(with_retry: true)
     @guest_user ||= User.find(session[:guest_user_id] ||= create_guest_user.id)
   rescue ActiveRecord::RecordNotFound
     # データベースからレコードが削除されていた場合のセーフティ
@@ -43,22 +40,19 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  #データベースに一時的なゲストユーザーを作製する。
+  # データベースに一時的なゲストユーザーを作製する。
 
   def create_guest_user
-
     # マイグレーション履歴にある username の追加（Add username to users）を考慮し、
 
     # username カラムに "ゲスト" などの初期値を入れておきます
 
     user = User.new(
-
-      username: "ゲスト",
+      username: 'ゲスト',
 
       email: "guest_#{Time.now.to_i}#{rand(100)}@example.com",
 
-      guest:true # 追加したフラグを true に
-
+      guest: true # 追加したフラグを true に
     )
 
     # パスワード必須などのバリデーションを一旦スキップして、安全に保存します
@@ -67,18 +61,16 @@ class ApplicationController < ActionController::Base
 
     # セッションにゲストIDを保存
 
-    session[:guest_user_id] =user.id
+    session[:guest_user_id] = user.id
 
     user
-
   end
 
   def logging_in(guest_user, current_user)
-    #guest_user.posts.update_all(user_id: current_user.id)
+    # guest_user.posts.update_all(user_id: current_user.id)
   end
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: [:username])
   end
-
 end
