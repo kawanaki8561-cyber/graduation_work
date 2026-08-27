@@ -1,6 +1,6 @@
-<div class="container py-5 mt-5 mb-5">
+<div class="container">
   <div class="row justify-content-center mt-5">
-    <div class="col-12 col-lg-10 d-flex flex-column flex-md-row align-items-center justify-content-center gap-5 mt-5">
+    <div class="col-12 col-lg-10 d-flex flex-column flex-md-row align-items-center justify-content-center gap-5">
       
       <!-- Left Column: Illustration Logo -->
       <div class="col-md-5 d-flex justify-content-center">
@@ -8,8 +8,8 @@
       </div>
       
       <!-- Right Column: Devise Form -->
-      <div class="col-md-6">
-        <h1 class="text-center text-md-start mb-5 fw-normal display-6 letter-spacing-lg">ログイン</h1>
+      <div class=" col-md-6">
+        <h1 class="text-center text-md-start mb-5 fw-normal display-6 letter-spacing-lg w-100">ログイン</h1>
         
         <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
           <div class="mb-4">
@@ -32,7 +32,19 @@
           <div class="d-flex justify-content-end mt-4">
             <%= f.submit "ログイン", class: "btn btn-custom-gray btn-large-custom fw-bold" %>
           </div>
+
+
+
         <% end %>
+
+        <div class="guest-login-container" style="margin-top: 20px; text-align: center;">
+          <%# ゲストログイン用のボタン %>
+          <%= button_to "ゲストログイン（お試し機能）", 
+                        users_guest_sign_in_path, 
+                        method: :post, 
+                        class: "btn btn-secondary w-100", 
+                        data: { turbo: false } %>
+        </div>
 
         <!-- Devise Links / Signup Redirect -->
         <div class="mt-5 text-center text-md-start">
