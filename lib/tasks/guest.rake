@@ -23,7 +23,7 @@ namespace :guest do
      # 4. アソシエーションデータ（紐づくCSVデータ等）も連動して安全に一括削除
     expired_guests.destroy_all
 
-    puts "★★★ [Cleanup] #{hours_limit}時間以上経過した古いゲストユーザーを #{count}件 削除しました。 ★★★"
+    puts "[Cleanup] #{hours_limit}時間以上経過した古いゲストユーザーを #{count}件 削除しました"
 
   end
 
