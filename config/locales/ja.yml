@@ -1,4 +1,8 @@
 ja:
+  users:
+    sessions:
+      guest_signed_in: "ゲストユーザーとしてログインしました（お試し中）。"
+      
   # 1. Deviseのエラーヘッダーや、Rails標準のシステムエラーメッセージ
   errors:
     messages:

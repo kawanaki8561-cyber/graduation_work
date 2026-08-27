@@ -25,8 +25,7 @@ module Users
       # Deviseのサインインメソッドでゲストユーザーをログイン状態にする
       sign_in user
 
-      flash[:notice] = 'ゲストユーザーとしてログインしました（お試し中）。'
-
+      flash[:notice] = t('.guest_signed_in')
       redirect_to root_path, status: :see_other
     end
 
