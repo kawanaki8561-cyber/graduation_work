@@ -245,7 +245,7 @@ CSVデータを読み込ませるだけで`異常値の計算`,`データの可�
 *   **Ruby on Rails:** 7.1.6
 *   **データベース:** MySQL 8.0.36
 *   **インフラ・環境構築:** Docker / Docker Compose（ARM64対応、軽量構成）
-*   **デプロイ先:** Render (Webサーバー) + AWS RDS (データベース)
+*   **デプロイ先:** AWS EC2+RDS (データベース)
 *   **CI/CD:** GitHub Actions (RSpec, RuboCopの自動実行)
 
 **【主要なGem】**
