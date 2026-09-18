@@ -10,8 +10,8 @@
     </div>
     <!-- Navigation Actions -->
     <nav class="d-flex gap-2">
-        <% if user_signed_in? %>
-            <%= button_to 'ログアウト', destroy_user_session_path, method: :delete %>
+        <% if user_signed_in? || current_or_guest_user.guest? %>
+            <%= button_to 'ログアウト', destroy_user_session_path,  class: "btn btn-custom-gray fw-medium", method: :delete %>
         <% else %>
             <%= link_to "ログイン", new_user_session_path, class: "btn btn-custom-gray fw-medium" %>
             <%= link_to "新規登録", new_user_registration_path, class: "btn btn-custom-gray fw-medium" %>
