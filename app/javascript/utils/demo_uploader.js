@@ -5,7 +5,7 @@ export default class DemoUploader{
         if(res.ok){
             const csvBlob = await res.blob();
             //console.log('抽出されたBlob:', csvBlob);
-            const demoFile = new File([csvBlob],'demoFile',{
+            const demoFile = new File([csvBlob],'demo.csv',{
                 type :'text/csv'
             });
             //console.log('生成されたFile:', demoFile);
@@ -28,6 +28,35 @@ export default class DemoUploader{
         }
     }
 }
+
+function setupDemoButton(){
+    //demoBtnを取得（#demo_btn）
+    //条件分岐：demoBtnの存在確認、且つイベントリスナー紐づけ確認（!demoBtn.dataset.bound）
+    //ベントリスナー紐づけをON
+    //console.log('ボタンが準備できました');
+    // ボタンクリック時に非同期で csv_reader を実行
+     //demoBtn.addEventListener
+     //クリックイベントを設置
+     // 第二引数を関数（非同期処理）
+     //DemoUploader()をインスタンス化し変数uploaderへ
+     //uploaderのcsv_reader()を実行
+
+    const demoBtn = document.querySelector('#demo_btn');
+    if(demoBtn && !demoBtn.dataset.bound){
+        demoBtn.dataset.bound = 'true';
+        console.log('ボタンが準備できました');
+
+        demoBtn.addEventListener('click', async ()=>{
+            const uploader = new DemoUploader();
+            await uploader.csv_reader();
+        });
+    }
+}
+
+// 画面読み込み時に初期化関数を実行
+// （Rails/Hotwire環境のため turbo:load を主とし、念のため DOMContentLoaded も併記）
+document.addEventListener('turbo:load', setupDemoButton);
+document.addEventListener('DOMContentLoaded', setupDemoButton);
 /*
             // ボタンクリックでcsv_readerを実行
 
