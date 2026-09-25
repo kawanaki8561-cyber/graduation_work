@@ -1,6 +1,7 @@
 export default class DemoUploader{
     async csv_reader() {
-        const res = await fetch('/csv/demo.csv');
+        //const res = await fetch('/csv/demo.csv');
+        const res = await fetch('/csv/demo.csv?t=' + new Date().getTime());
         //console.log(res);
         if(res.ok){
             const csvBlob = await res.blob();
@@ -23,12 +24,14 @@ export default class DemoUploader{
             // 1. input要素にファイルを代入
             csvInput.files = dt.files;
             const dispatched = csvInput.dispatchEvent(new Event('change',{bubbles: true }));
-            console.log('2\. changeイベント発火結果:', dispatched);
+            console.log('2 changeイベント発火結果:', dispatched);
+
+            return csvInput;
            }
         }
     }
 }
-
+/*
 function setupDemoButton(){
     //demoBtnを取得（#demo_btn）
     //条件分岐：demoBtnの存在確認、且つイベントリスナー紐づけ確認（!demoBtn.dataset.bound）
@@ -52,11 +55,11 @@ function setupDemoButton(){
         });
     }
 }
-
 // 画面読み込み時に初期化関数を実行
 // （Rails/Hotwire環境のため turbo:load を主とし、念のため DOMContentLoaded も併記）
-document.addEventListener('turbo:load', setupDemoButton);
-document.addEventListener('DOMContentLoaded', setupDemoButton);
+document.addEventListener('turbo:load', buildDemonstration);
+document.addEventListener('DOMContentLoaded', buildDemonstration);
+*/
 /*
             // ボタンクリックでcsv_readerを実行
 
@@ -68,3 +71,4 @@ document.addEventListener('DOMContentLoaded', setupDemoButton);
                 }
             });
 */
+
