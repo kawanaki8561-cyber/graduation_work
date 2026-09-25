@@ -5,6 +5,7 @@ import Papa from "papaparse"
 // import ChartRenderer from "../utils/chart_renderer"
 import SpcCalculator from "utils/spc_calculator"
 import ChartRenderer from "utils/chart_renderer"
+import DemoUploader from "utils/demo_uploader"
 
 export default class extends Controller {
   // 【変更】targets に "selectedColumnName" を追加
@@ -13,7 +14,12 @@ export default class extends Controller {
   connect() {
     this.csvData = []
     this.chartRenderer = null
+    //this.buildDemonstration()
+    document.addEventListener('turbo:load', this.buildDemonstration);
+    document.addEventListener('DOMContentLoaded', this.buildDemonstration);
   }
+
+
 
   handleFileUpload(event) {
     const file = event.target.files.item(0);
@@ -42,6 +48,16 @@ export default class extends Controller {
         alert(`CSV解析エラー: ${error.message || error}`);
       }
     });
+  }
+
+  buildDemonstration(){
+    const button =document.getElementById('demo_btn');
+
+    button.addEventListener("click", async ()=>{
+      const uploader = new DemoUploader();
+      await uploader.csv_reader();
+    });
+    console.log('ボタンクリックしました');
   }
 
   buildSelectOptions(fields) {
