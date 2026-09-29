@@ -13,7 +13,7 @@ RSpec.describe 'サンプルデモ機能', type: :system do
   it '項目を選択すると、統計値が正しく算出・表示されること' do
     # 1. サンプルデータ読み込みボタンをクリック（通常のCapybara操作で確実に発火）
     # click_button 'サンプルデータで試す'
-
+    expect(page).to have_select('select_column_name', with_options: ['I管理TEST1検知デモ'])
     # 2. CSV読み込み完了（ファイル名反映）を待機
     # expect(page).to have_field('CSVファイル読み込み', with: /demo\.csv$/)
 
