@@ -37,8 +37,7 @@ RSpec.describe 'サンプルデモ機能', type: :system do
 
     # . 統計値（平均値）の反映を確認
     expect(find('[data-spc-chart-target="mean"]')).to have_content('9.988')
-    #expect(find('[data-spc-chart-target="mean"]')).to have_content('9.91') #わざとNG
-
+    
     click_button 'SPC管理図'
 
     expect(page).to have_css('canvas[data-spc-chart-target="canvas"]')
