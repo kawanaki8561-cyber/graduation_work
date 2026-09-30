@@ -58,7 +58,7 @@ Capybara.register_driver :arm_headless_chrome do |app|
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options, service: service)
 end
 
-#Capybara.default_max_wait_time = 10
+# Capybara.default_max_wait_time = 10
 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
