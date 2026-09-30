@@ -11,7 +11,7 @@ RSpec.describe 'サンプルデモ機能', type: :system do
     # 修正前： click_button 'サンプルデータで試す'
     # 修正後： idを指定してクリックする
     # find('#demo_btn').click
-    #click_button 'サンプルデータで試す'
+    # click_button 'サンプルデータで試す'
   end
 
   it '項目を選択すると、統計値が正しく算出・表示されること' do
