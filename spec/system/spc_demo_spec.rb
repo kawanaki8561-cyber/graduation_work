@@ -2,12 +2,14 @@ require 'rails_helper'
 
 RSpec.describe 'サンプルデモ機能', type: :system do
   let(:user) { create(:user) }
-
   before do
     page.driver.browser.manage.window.resize_to(1920, 1080)
     sign_in user
     visit root_path
-    click_button 'サンプルデータで試す'
+    
+    # 修正前： click_button 'サンプルデータで試す'
+    # 修正後： idを指定してクリックする
+    find('#demo_btn').click 
   end
 
   it '項目を選択すると、統計値が正しく算出・表示されること' do
