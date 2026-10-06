@@ -82,4 +82,36 @@ export default class SpcCalculator {
     // 重複を除外して返す
     return Array.from(new Set(outliers));
   }
+
+  /** 工程能力指数（Cp, Cpk）を計算する 
+  * @param {number|null} usl - 規格上限 (Upper Specification Limit)
+  * @param {number|null} lsl - 規格下限 (Lower Specification Limit)
+  * @param {number} mean - 工程平均 \* @param {number} std - 標準偏差(σ)
+  * @returns {Object|null} { cp, cpk, cpu, cpl } または null
+  */
+
+  static calculateCpk(usl, lsl, mean, std){
+    if(typeof mean !== "number" || isNaN(mean)) return null;
+    if(typeof std !== "number" || isNaN(std) || std <= 0) return null;
+    
+    const hasUsl = usl !==null && usl !== undefined && !isNaN(Number(usl));
+    const hasLsl = lsl !==null && lsl !== undefined && !isNaN(Number(lsl));
+    if(!hasUsl && !hasLsl) return null;
+
+    // 1. Cpの計算
+    const cp = (usl-lsl)/(std*6);
+
+    // 2. Cpkの計算
+    const cpu = (usl - mean) / (3 * std);
+    const cpl = (mean - lsl) / (3 * std);
+    // 小さい方を採用する
+    const cpk = Math.min(cpu, cpl);
+
+    return {
+      cp,
+      cpk
+    };
+
+  }
+
 }
