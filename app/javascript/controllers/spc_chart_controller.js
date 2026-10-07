@@ -9,7 +9,7 @@ import DemoUploader from "utils/demo_uploader"
 
 export default class extends Controller {
   // 【変更】targets に "selectedColumnName" を追加
-  static targets = [ "select", "selectedColumnName", "mean", "stddev", "ucl", "lcl", "test1Outliers", "test3Outliers", "canvas" ]
+  static targets = [ "select", "selectedColumnName", "mean", "stddev", "ucl", "lcl", "test1Outliers", "test3Outliers", "canvas", "usl", "lsl" ]
 
   connect() {
     this.csvData = []
@@ -98,6 +98,10 @@ export default class extends Controller {
 
     const { cl, sigma, ucl, lcl, outlierIndices, test3Indices } = spcResults;
 
+    // 2.5. 工程能力指数を算出
+    const cpkResult = SpcCalculator.calculateCpk(usl, lsl, cl, sigma);
+
+
     // 2. 画面（ViewのTarget）へ結果を出力
     if (this.hasMeanTarget) this.meanTarget.textContent = cl.toFixed(3);
     if (this.hasStddevTarget) this.stddevTarget.textContent = sigma.toFixed(3);
@@ -134,6 +138,24 @@ export default class extends Controller {
       this.chartRenderer = new ChartRenderer(ctx);
       this.chartRenderer.draw(spcResults);
     }
+  }
+
+  hundleCalateCpk(event){
+    const usl = parseFloat(this.uslTarget.value);
+    const lsl = parseFloat(this.lslTarget.value);
+
+    console.log("--- デバッグ開始 ---");
+    
+    // 1. 要素自体をログに出して、<input>タグかどうかを確認する
+    console.log("上限のHTMLタグ:", this.uslTarget);
+    console.log("上限のナマの値:", this.uslTarget.value);
+    
+    console.log("下限のHTMLタグ:", this.lslTarget);
+    console.log("下限のナマの値:", this.lslTarget.value);
+
+
+
+    console.log(`計算開始: 上限=${usl}, 下限=${lsl}`);
   }
 
   disconnect() {
