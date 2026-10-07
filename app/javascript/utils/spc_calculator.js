@@ -96,20 +96,44 @@ export default class SpcCalculator {
     
     const hasUsl = usl !==null && usl !== undefined && !isNaN(Number(usl));
     const hasLsl = lsl !==null && lsl !== undefined && !isNaN(Number(lsl));
+    
     if(!hasUsl && !hasLsl) return null;
 
+    const numUsl = hasUsl ? Number(usl) : null;
+    const numLsl = hasLsl ? Number(lsl) : null;
+    
+    let cpu = null;
+    let cpl = null; 
+    let cp = null;
+
     // 1. Cpの計算
-    const cp = (usl-lsl)/(std*6);
+    if(hasUsl && hasLsl){
+      cp = (numUsl - numLsl)/(6 * std);
+    }
 
     // 2. Cpkの計算
-    const cpu = (usl - mean) / (3 * std);
-    const cpl = (mean - lsl) / (3 * std);
+    if(hasUsl){
+      cpu = (numUsl - mean) / (3 * std);      
+    } 
+
+    if(hasLsl){
+      cpl = (mean - numLsl) / (3 * std);
+    }
+    
     // 小さい方を採用する
-    const cpk = Math.min(cpu, cpl);
+    let cpk = null;
+    if(hasUsl && hasLsl){
+      cpk = Math.min(cpu, cpl);
+    }else if(hasUsl){
+      cpk = cpu;
+    }else if(hasLsl){
+      cpk = cpl;
+    }
+    
 
     return {
-      cp,
-      cpk
+      cp: cp !== null ? Number(cp.toFixed(3)) : null,
+      cpk: cpk !== null ? Number(cpk.toFixed(3)) : null,
     };
 
   }
