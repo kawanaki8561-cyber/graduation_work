@@ -130,6 +130,7 @@ export default class SpcCalculator {
       cpk = cpl;
     }
     
+    console.log("calculateCpkは起動しました");
 
     return {
       cp: cp !== null ? Number(cp.toFixed(3)) : null,
