@@ -99,7 +99,7 @@ export default class extends Controller {
     const { cl, sigma, ucl, lcl, outlierIndices, test3Indices } = spcResults;
 
     // 2.5. 工程能力指数を算出
-    const cpkResult = SpcCalculator.calculateCpk(usl, lsl, cl, sigma);
+    const cpkResult = SpcCalculator.calculateCpk(this.usl, this.lsl, cl, sigma);
 
 
     // 2. 画面（ViewのTarget）へ結果を出力
@@ -141,21 +141,11 @@ export default class extends Controller {
   }
 
   hundleCalateCpk(event){
-    const usl = parseFloat(this.uslTarget.value);
-    const lsl = parseFloat(this.lslTarget.value);
+    this.usl = parseFloat(this.uslTarget.value);
+    this.lsl = parseFloat(this.lslTarget.value);
 
-    console.log("--- デバッグ開始 ---");
+    //const spcResults = SpcCalculator.calculateCpk(usl, lsl, sigma, cl)
     
-    // 1. 要素自体をログに出して、<input>タグかどうかを確認する
-    console.log("上限のHTMLタグ:", this.uslTarget);
-    console.log("上限のナマの値:", this.uslTarget.value);
-    
-    console.log("下限のHTMLタグ:", this.lslTarget);
-    console.log("下限のナマの値:", this.lslTarget.value);
-
-
-
-    console.log(`計算開始: 上限=${usl}, 下限=${lsl}`);
   }
 
   disconnect() {
