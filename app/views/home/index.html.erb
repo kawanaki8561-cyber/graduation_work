@@ -86,6 +86,11 @@
         border: 1px solid var(--input-border);
         border-radius: 4px;
     }
+    
+    .histogram-container {
+      max-width: 650px;
+      width: 100%;
+    }
 
     /* --- サイドバーとトグルボタンのスタイル --- */
     .custom-sidebar {
@@ -255,6 +260,10 @@
                 <span data-spc-chart-target="cp" class="fs-4 fw-bold">-</span>
               </div>
             </div>
+          </div>
+
+          <div class="histogram-container mt-4">
+            <canvas data-spc-chart-target="histogramCanvas"></canvas>
           </div>
 
         </div>
