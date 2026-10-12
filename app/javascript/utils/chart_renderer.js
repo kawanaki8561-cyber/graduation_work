@@ -152,6 +152,7 @@ export default class ChartRenderer {
 
     this.destroyExistingChart();
 
-
+    // スタージェスの公式で階級数を動的算出
+    const nClasses = Math.ceil(1 + Math.log2(n));
   }
 }
