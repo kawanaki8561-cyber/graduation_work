@@ -144,5 +144,10 @@ export default class ChartRenderer {
     });
   }
 
-  
+  // 2. 【新規追加】ヒストグラム描画メソッド
+  drawHistogram(dataArray) {
+    const validData =dataArray.filter(val => val !== null && val !== undefined && !isNaN(val));
+    const n = validData.length;
+
+  }
 }
