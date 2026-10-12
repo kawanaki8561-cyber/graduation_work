@@ -150,6 +150,8 @@ export default class ChartRenderer {
     const n = validData.length;
     if(n === 0) return;
 
+    this.destroyExistingChart();
+
 
   }
 }
