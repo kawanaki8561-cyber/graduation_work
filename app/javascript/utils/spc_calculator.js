@@ -97,7 +97,7 @@ export default class SpcCalculator {
     const hasUsl = usl !==null && usl !== undefined && !isNaN(Number(usl));
     const hasLsl = lsl !==null && lsl !== undefined && !isNaN(Number(lsl));
     
-    if(!hasUsl && !hasLsl) return null;
+    //if(!hasUsl && !hasLsl) return null;
 
     const numUsl = hasUsl ? Number(usl) : null;
     const numLsl = hasLsl ? Number(lsl) : null;
@@ -133,8 +133,8 @@ export default class SpcCalculator {
     console.log("calculateCpkは起動しました");
 
     return {
-      cp: cp !== null ? Number(cp.toFixed(3)) : null,
-      cpk: cpk !== null ? Number(cpk.toFixed(3)) : null,
+      cp: cp !== null ? Number(cp) : null,
+      cpk: cpk !== null ? Number(cpk) : null,
     };
 
   }
