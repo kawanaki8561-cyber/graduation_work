@@ -157,5 +157,7 @@ export default class ChartRenderer {
 
     // simple-statistics で境界値を取得
     const breaks = equalIntervalBreaks(validData, nClasses);
+    const labels = [];
+    const counts = new Array(nClasses).fill(0);
   }
 }
