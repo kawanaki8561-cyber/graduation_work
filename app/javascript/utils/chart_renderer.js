@@ -9,19 +9,25 @@ export default class ChartRenderer {
     this.chartInstance = null;
   }
 
+  // 既存のChart破棄処理を共通化
+  destroyExistingChart(){
+    const existingChart = Chart.getChart(this.ctx);
+    if(existingChart){
+      existingChart.destroy();
+    }
+    if(this.chartInstance){
+      this.chartInstance.destroy();
+    }
+  }
+
   // グラフを描画するメソッド
   draw(spcResults) {
     // 【変更】outlierIndices (TEST1) と test3Indices (TEST3) の両方を受け取り
     const { validData, cl, ucl, lcl, outlierIndices = [], test3Indices = [] } = spcResults;
 
     // 1. Canvas 上に既存の Chart インスタンスが存在する場合は確実に破棄（重複エラー防止）
-    const existingChart = Chart.getChart(this.ctx);
-    if (existingChart) {
-      existingChart.destroy();
-    }
-    if (this.chartInstance) {
-      this.chartInstance.destroy();
-    }
+    this.destroyExistingChart();
+
 
     // 2. X軸のラベルを作成 (データ数に合わせて 1, 2, 3... と連番を振る)
     const labels = validData.map((_, index) => index + 1);
@@ -137,4 +143,6 @@ export default class ChartRenderer {
       }
     });
   }
+
+  
 }
