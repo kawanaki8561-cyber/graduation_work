@@ -148,6 +148,8 @@ export default class ChartRenderer {
   drawHistogram(dataArray) {
     const validData =dataArray.filter(val => val !== null && val !== undefined && !isNaN(val));
     const n = validData.length;
+    if(n === 0) return;
+
 
   }
 }
