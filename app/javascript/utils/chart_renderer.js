@@ -154,5 +154,8 @@ export default class ChartRenderer {
 
     // スタージェスの公式で階級数を動的算出
     const nClasses = Math.ceil(1 + Math.log2(n));
+
+    // simple-statistics で境界値を取得
+    const breaks = equalIntervalBreaks(validData, nClasses);
   }
 }
