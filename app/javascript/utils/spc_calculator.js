@@ -1,5 +1,7 @@
 // app/javascript/utils/spc_calculator.js
 import { mean, standardDeviation } from "simple-statistics"
+import { equalIntervalBreaks } from "simple-statistics";
+
 
 export default class SpcCalculator {
   // インスタンス化せずに使えるよう static メソッドとして定義
@@ -138,5 +140,23 @@ export default class SpcCalculator {
     };
 
   }
+
+  static calculateNclass(dataArray){
+    const validData =dataArray.filter(val => val !== null && val !== undefined && !isNaN(val));
+    const n = validData.length;
+    if(n === 0) return null;
+
+    // スタージェスの公式で階級数を動的算出
+    const nClass = Math.ceil(1 + Math.log2(n));
+    // simple-statistics で境界値を取得
+    const breaks = equalIntervalBreaks(validData, nClass);
+
+    return {
+      validData: validData !== null ? validData: null,
+      nClasses: nClass !== null ? nClass: null,
+      breaks: breaks !== null ? breaks: null
+    }
+  }
+
 
 }
