@@ -141,7 +141,7 @@ export default class extends Controller {
       this.chartRenderer = new ChartRenderer(ctx);
       this.chartRenderer.draw(spcResults);
     }
-    debugger;
+    
     if(this.hasHistogramCanvasTarget){
       const ctx = this.histogramCanvasTarget.getContext('2d');
       this.histogramRenderer = new ChartRenderer(ctx);
