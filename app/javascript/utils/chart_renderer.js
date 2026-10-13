@@ -182,7 +182,12 @@ export default class ChartRenderer {
         labels: labels,
         datasets: [{
           label: "度数",
-          data: counts
+          data: counts,
+          backgroundColor: 'rgba(54, 162, 235, 0.6)',
+          borderColor: 'rgba(54, 162, 235, 1)', // 枠線をくっきり表示
+          borderWidth: 1, // 柱の境界線
+          barPercentage: 1.0, // 柱同士の隙間をなくす
+          categoryPercentage: 1.0
         }] 
       }
     });
