@@ -159,5 +159,11 @@ export default class ChartRenderer {
     const breaks = equalIntervalBreaks(validData, nClasses);
     const labels = [];
     const counts = new Array(nClasses).fill(0);
+
+    //xラベル生成
+    for(let i=0;i < nClasses; i++){
+      labels.push(`${breaks[i].toFixed(1)} - ${breaks[i + 1].toFixed(1)}`);
+    }
+
   }
 }
