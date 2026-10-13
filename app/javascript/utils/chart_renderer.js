@@ -196,6 +196,11 @@ export default class ChartRenderer {
         plugins: {
           legend: {
             display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: (context) => `度数： ${context.raw}件`
+            }
           }
         },
       }
