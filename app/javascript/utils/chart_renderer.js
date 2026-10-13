@@ -1,6 +1,7 @@
 // app/javascript/utils/chart_renderer.js
 import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
+import SpcCalculator from "utils/spc_calculator"
 
 export default class ChartRenderer {
   // コンストラクタで対象となる Canvas のコンテキストを受け取る
@@ -146,17 +147,15 @@ export default class ChartRenderer {
 
   // 2. 【新規追加】ヒストグラム描画メソッド
   drawHistogram(dataArray) {
-    const validData =dataArray.filter(val => val !== null && val !== undefined && !isNaN(val));
-    const n = validData.length;
-    if(n === 0) return;
+    
 
     this.destroyExistingChart();
 
     // スタージェスの公式で階級数を動的算出
-    const nClasses = Math.ceil(1 + Math.log2(n));
-
-    // simple-statistics で境界値を取得
-    const breaks = equalIntervalBreaks(validData, nClasses);
+    const result = SpcCalculator.calculateNclass(dataArray);
+    if(!result) return null;
+    const {validData, nClasses, breaks} = result;
+    
     const labels = [];
     const counts = new Array(nClasses).fill(0);
 
@@ -166,7 +165,7 @@ export default class ChartRenderer {
     }
 
     //度数集計
-    validData.foEach(val => {
+    validData.forEach(val => {
       for (let i = 0; i < nClasses; i++){
         const isLastBin = (i === nClasses - 1);
         if (val >= breaks[i] && (isLastBin ? val <= breaks[i + 1] : val < breaks[i + 1])){
@@ -175,5 +174,20 @@ export default class ChartRenderer {
         }
       }
     });
+
+    //Chart.js の最もシンプルな基本構成 ▼▼
+    this.chartInstance = new Chart(this.ctx, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "度数",
+          data: counts
+        }] 
+      }
+    });
+
+    return this.chartInstance;
+
   }
 }
