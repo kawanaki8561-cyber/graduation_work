@@ -165,5 +165,15 @@ export default class ChartRenderer {
       labels.push(`${breaks[i].toFixed(1)} - ${breaks[i + 1].toFixed(1)}`);
     }
 
+    //度数集計
+    validData.foEach(val => {
+      for (let i = 0; i < nClasses; i++){
+        const isLastBin = (i === nClasses - 1);
+        if (val >= breaks[i] && (isLastBin ? val <= breaks[i + 1] : val < breaks[i + 1])){
+          counts[i]++;
+          break;
+        }
+      }
+    });
   }
 }
