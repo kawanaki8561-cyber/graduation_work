@@ -219,7 +219,9 @@ export default class ChartRenderer {
               display: true,
               text: '度数(件数)',
               font: { weight: 'bold' }
-            }
+            },
+            beginAtZero: true, // 常に0から開始
+            ticks: { precision: 0 }
           }
         }
       }
