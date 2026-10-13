@@ -192,7 +192,12 @@ export default class ChartRenderer {
       },
       options: {
         responsive: true,
-        //maintainAspectRatio: false // 親要素のサイズにフィット
+        //maintainAspectRatio: false, // 親要素のサイズにフィット
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
       }
     });
 
