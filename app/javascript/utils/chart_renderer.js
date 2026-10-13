@@ -189,6 +189,10 @@ export default class ChartRenderer {
           barPercentage: 1.0, // 柱同士の隙間をなくす
           categoryPercentage: 1.0
         }] 
+      },
+      options: {
+        responsive: true,
+        //maintainAspectRatio: false // 親要素のサイズにフィット
       }
     });
 
