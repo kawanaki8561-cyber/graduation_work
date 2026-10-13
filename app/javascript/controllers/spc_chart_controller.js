@@ -9,7 +9,7 @@ import DemoUploader from "utils/demo_uploader"
 
 export default class extends Controller {
   // 【変更】targets に "selectedColumnName" を追加
-  static targets = [ "select", "selectedColumnName", "mean", "stddev", "ucl", "lcl", "test1Outliers", "test3Outliers", "canvas", "usl", "lsl", "cpk", "cp" ]
+  static targets = [ "select", "selectedColumnName", "mean", "stddev", "ucl", "lcl", "test1Outliers", "test3Outliers", "canvas", "histogramCanvas", "usl", "lsl", "cpk", "cp" ]
 
   connect() {
     this.csvData = []
@@ -141,6 +141,13 @@ export default class extends Controller {
       this.chartRenderer = new ChartRenderer(ctx);
       this.chartRenderer.draw(spcResults);
     }
+    debugger;
+    if(this.hasHistogramCanvasTarget){
+      const ctx = this.histogramCanvasTarget.getContext('2d');
+      this.histogramRenderer = new ChartRenderer(ctx);
+      this.histogramRenderer.drawHistogram(dataArray);
+    }
+
   }
 
   hundleCalateCpk(event){
