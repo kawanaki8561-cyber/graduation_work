@@ -213,6 +213,13 @@ export default class ChartRenderer {
             grid: {
               display: false
             }
+          },
+          y: {
+            title: {
+              display: true,
+              text: '度数(件数)',
+              font: { weight: 'bold' }
+            }
           }
         }
       }
