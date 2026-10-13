@@ -203,6 +203,18 @@ export default class ChartRenderer {
             }
           }
         },
+        scales: {
+          x: {
+            title:{
+              display: true,
+              text: '階級（測定値範囲）',
+              font: { weight: 'bold' }
+            },
+            grid: {
+              display: false
+            }
+          }
+        }
       }
     });
 
