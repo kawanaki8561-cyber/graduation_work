@@ -99,8 +99,10 @@ export default class extends Controller {
     const { cl, sigma, ucl, lcl, outlierIndices, test3Indices } = spcResults;
 
     // 2.5. 工程能力指数を算出
+    const usl = this.hasUslTarget || this.uslTarget.valueAsNumber !== null ? this.uslTarget.valueAsNumber : null;
+    const lsl = this.hasLslTarget || this.lslTarget.valueAsNumber !== null ? this.lslTarget.valueAsNumber : null;
     
-    const { cp, cpk } = SpcCalculator.calculateCpk(this.uslTarget.valueAsNumber, this.lslTarget.valueAsNumber, cl, sigma);
+    const { cp, cpk } = SpcCalculator.calculateCpk(usl, lsl, cl, sigma);
     
 
     // 2. 画面（ViewのTarget）へ結果を出力
@@ -145,7 +147,7 @@ export default class extends Controller {
     if(this.hasHistogramCanvasTarget){
       const ctx = this.histogramCanvasTarget.getContext('2d');
       this.histogramRenderer = new ChartRenderer(ctx);
-      this.histogramRenderer.drawHistogram(dataArray);
+      this.histogramRenderer.drawHistogram(dataArray, usl, lsl, cl);
     }
 
   }
