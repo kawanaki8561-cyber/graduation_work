@@ -197,7 +197,7 @@ export default class ChartRenderer {
           ctx.beginPath();
           ctx.setLineDash([5, 5]);
           ctx.strokeStyle =color;
-          ctx.linewidth = 2;
+          ctx.lineWidth = 2; // ★修正: Wを大文字に変更
           ctx.moveTo(xPos, top);
           ctx.lineTo(xPos, bottom);
           ctx.stroke();
