@@ -184,10 +184,38 @@ export default class ChartRenderer {
 
         if (range <= 0) return;
 
-        
+        const drawVerticalLine = (value, color, labelText) =>{
+          if (value === null || value === undefined || isNaN(value)) return;
+          if (value < minVal || value > maxVal) return;
+
+          // 【位置計算】指定された数値（value）を画面上の Xピクセル位置（xPos）に変換
+          const ratio = (value - minVal) / range;
+          const xPos = left + ratio * (right - left);
+
+          //Canvas API による線の描画
+          ctx.save();
+          ctx.beginPath();
+          ctx.setLineDash([5, 5]);
+          ctx.strokeStyle =color;
+          ctx.linewidth = 2;
+          ctx.moveTo(xPos, top);
+          ctx.lineTo(xPos, bottom);
+          ctx.stroke();
+
+          // 線脇のテキスト（USL: 10.0 など）の描画
+          ctx.fillStyle = color;
+          ctx.font = 'bold 11px sans-serif';
+          ctx.fillText(labelText, xPos + 4, top + 15);
+          ctx.restore();
+        };
+
+        // 3\. 各限界線・中央線の描画を実行
+        drawVerticalLine(usl, 'red', `USL: ${usl}`);
+        drawVerticalLine(lsl, 'red', `LSL: ${lsl}`);
+        drawVerticalLine(cl, 'green', cl !== null && !isNaN(cl) ?  `CL: ${cl.toFixed(2)}` : 'CL');
 
       }
-    }
+    };
 
 
 
