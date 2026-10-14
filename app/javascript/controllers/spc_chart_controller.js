@@ -143,13 +143,18 @@ export default class extends Controller {
       this.chartRenderer = new ChartRenderer(ctx);
       this.chartRenderer.draw(spcResults);
     }
+
+    hundleDrawHistogram(dataArray, usl, lsl, cl)
     
-    if(this.hasHistogramCanvasTarget){
+
+  }
+
+  hundleDrawHistogram(dataArray, usl, lsl, cl){
+    if(this.hasHistogramCanvasTarget){  
       const ctx = this.histogramCanvasTarget.getContext('2d');
       this.histogramRenderer = new ChartRenderer(ctx);
       this.histogramRenderer.drawHistogram(dataArray, usl, lsl, cl);
     }
-
   }
 
   hundleCalateCpk(event){
@@ -182,6 +187,8 @@ export default class extends Controller {
      // 4. 最後に1回だけ画面（DOM）を更新する
     if (this.hasCpTarget) this.cpTarget.textContent = displayCp;
     if (this.hasCpkTarget) this.cpkTarget.textContent = displayCpk;
+
+
     
   }
 
