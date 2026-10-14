@@ -174,8 +174,19 @@ export default class ChartRenderer {
       }
     });
 
+    const specLinesPlugin = {
+      id: 'specLines',
+      afterDraw: (chart) =>{
 
-  }
+        const { ctx, chartArea: { top, bottom, left, right } } = chart;
+        const minVal = breaks;
+        const maxVal = breaks[breaks.length - 1];
+        const range = maxVal - minVal;
+
+        if (range <= 0) return;
+
+      }
+    }
 
 
 
