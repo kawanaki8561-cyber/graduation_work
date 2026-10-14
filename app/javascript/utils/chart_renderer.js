@@ -146,9 +146,8 @@ export default class ChartRenderer {
   }
 
   // 2. 【新規追加】ヒストグラム描画メソッド
-  drawHistogram(dataArray) {
+  drawHistogram(dataArray, usl = null, lsl = null, cl = null) {
     
-
     this.destroyExistingChart();
 
     // スタージェスの公式で階級数を動的算出
@@ -174,6 +173,11 @@ export default class ChartRenderer {
         }
       }
     });
+
+
+  }
+
+
 
     //Chart.js の最もシンプルな基本構成 ▼▼
     this.chartInstance = new Chart(this.ctx, {
