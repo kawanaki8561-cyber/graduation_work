@@ -268,7 +268,8 @@ export default class ChartRenderer {
             ticks: { precision: 0 }
           }
         }
-      }
+      },
+      plugins: [specLinesPlugin]
     });
 
     return this.chartInstance;
