@@ -81,10 +81,10 @@ export default class extends Controller {
 
     if (!selectedColumn) return;
 
-    const columnData = this.csvData.map(row => row[selectedColumn]);
-    console.log(`【${selectedColumn}】の抽出データ:`, columnData);
+    this.currentDataArray = this.csvData.map(row => row[selectedColumn]);
+    console.log(`【${selectedColumn}】の抽出データ:`, this.currentDataArray);
 
-    this.processSPC(columnData);
+    this.processSPC(this.currentDataArray);
   }
 
   processSPC(dataArray) {
@@ -144,7 +144,7 @@ export default class extends Controller {
       this.chartRenderer.draw(spcResults);
     }
 
-    hundleDrawHistogram(dataArray, usl, lsl, cl)
+    this.hundleDrawHistogram(dataArray, usl, lsl, cl);
     
 
   }
