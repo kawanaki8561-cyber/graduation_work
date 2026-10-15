@@ -182,13 +182,13 @@ export default class extends Controller {
         if (result.cp !== null) displayCp = result.cp.toFixed(2);
         if (result.cpk !== null) displayCpk = result.cpk.toFixed(2);
       }       
-      
+    this.hundleDrawHistogram(this.currentDataArray, currentUsl, currentLsl, cl);  
     }
      // 4. 最後に1回だけ画面（DOM）を更新する
     if (this.hasCpTarget) this.cpTarget.textContent = displayCp;
     if (this.hasCpkTarget) this.cpkTarget.textContent = displayCpk;
 
-
+    
     
   }
 
