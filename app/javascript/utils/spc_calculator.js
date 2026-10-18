@@ -141,10 +141,12 @@ export default class SpcCalculator {
 
   }
 
-  static calculateNclass(dataArray){
+  static calculateNclass(dataArray, usl = null, lsl = null){
     const validData =dataArray.filter(val => val !== null && val !== undefined && !isNaN(val));
     const n = validData.length;
     if(n === 0) return null;
+
+    
 
     // スタージェスの公式で階級数を動的算出
     const nClass = Math.ceil(1 + Math.log2(n));
