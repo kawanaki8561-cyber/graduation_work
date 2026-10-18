@@ -151,8 +151,9 @@ export default class ChartRenderer {
     this.destroyExistingChart();
 
     // スタージェスの公式で階級数を動的算出
-    const result = SpcCalculator.calculateNclass(dataArray);
+    const result = SpcCalculator.calculateNclass(dataArray, usl, lsl);
     if(!result) return null;
+    
     const {validData, nClasses, breaks} = result;
     
     const labels = [];
@@ -216,8 +217,6 @@ export default class ChartRenderer {
 
       }
     };
-
-
 
     //Chart.js の最もシンプルな基本構成 ▼▼
     this.chartInstance = new Chart(this.ctx, {
