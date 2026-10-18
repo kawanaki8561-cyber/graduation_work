@@ -165,6 +165,7 @@ export default class ChartRenderer {
       labels.push(`${breaks[i].toFixed(1)} - ${breaks[i + 1].toFixed(1)}`);
     }
 
+
     //度数集計
     validData.forEach(val => {
       for (let i = 0; i < nClasses; i++){
@@ -185,7 +186,7 @@ export default class ChartRenderer {
         const range = maxVal - minVal;
 
         if (range <= 0) return;
-
+        
         const drawVerticalLine = (value, color, labelText) =>{
           if (value === null || value === undefined || isNaN(value)) return;
           if (value < minVal || value > maxVal) return;
@@ -282,19 +283,45 @@ export default class ChartRenderer {
     if(n === 0) return null;
 
 
-    let extendedData = [...validData];
-    if(usl !== null) extendedData.push(usl);
-    if(lsl !== null) extendedData.push(lsl);
-
     // スタージェスの公式で階級数を動的算出
-    const nClass = Math.ceil(1 + Math.log2(n));
+    let nClass = Math.ceil(1 + Math.log2(n));
     // simple-statistics で境界値を取得
-    const breaks = equalIntervalBreaks(extendedData, nClass); // 拡張された範囲（規格値含む）をもとに equalIntervalBreaks を実行
+    let breaks = equalIntervalBreaks(validData, nClass); // 拡張された範囲（規格値含む）をもとに equalIntervalBreaks を実行
+    
+
+    // 階級幅の算出と浮動小数点丸め用の精度（有効桁数）判定
+    const bleaksRange = breaks[1] - breaks[0];
+    const decimals = (bleaksRange.toString().split('.')[1] || '').length + 2;
+    const round = (val) => Number(val.toFixed(decimals));
+
+
+    // --- USL（上限）の拡張 ---
+    const currentMaxRange = breaks[breaks.length - 1];
+    if(usl !== null && usl > currentMaxRange){
+      let nextValue = currentMaxRange;
+      while(nextValue < usl){
+        nextValue = round(nextValue + bleaksRange);
+        breaks.push(nextValue);
+      }
+    };
+
+    // --- LSL（下限）の拡張 ---
+    const currentMinRange = breaks[0];
+    if (lsl !== null && lsl < currentMinRange) {
+      let prevValue = currentMinRange;
+      while (prevValue > lsl) {
+        prevValue = round(prevValue - bleaksRange);
+        breaks.unshift(prevValue);
+      }
+
+    }
+    // 拡張後の最終階級数（区間の数 = 境界値の数 - 1）
+    const nClasses = breaks.length - 1;
 
     return {
-      validData: validData !== null ? validData: null, // 度数カウント用には元のデータのみを渡す
-      nClasses: nClass !== null ? nClass: null,
-      breaks: breaks !== null ? breaks: null
+      validData, // 度数カウント用には元のデータのみを渡す
+      nClasses,
+      breaks
     }
   }
 }
