@@ -208,7 +208,8 @@ export default class ChartRenderer {
           // 線脇のテキスト（USL: 10.0 など）の描画
           ctx.fillStyle = color;
           ctx.font = 'bold 11px sans-serif';
-          ctx.fillText(labelText, xPos + 4, top + 15);
+          const textX = (xPos > right - 60) ? (xPos - 55) : (xPos + 4);
+          ctx.fillText(labelText, textX, top + 15);
           ctx.restore();
         };
 
