@@ -1,7 +1,8 @@
 // app/javascript/utils/chart_renderer.js
 import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
-import SpcCalculator from "utils/spc_calculator"
+//import SpcCalculator from "utils/spc_calculator"
+import { equalIntervalBreaks } from "simple-statistics";
 
 export default class ChartRenderer {
   // コンストラクタで対象となる Canvas のコンテキストを受け取る
@@ -151,7 +152,7 @@ export default class ChartRenderer {
     this.destroyExistingChart();
 
     // スタージェスの公式で階級数を動的算出
-    const result = SpcCalculator.calculateNclass(dataArray, usl, lsl);
+    const result = this.calculateNclass(dataArray, usl, lsl);
     if(!result) return null;
     
     const {validData, nClasses, breaks} = result;
@@ -273,5 +274,27 @@ export default class ChartRenderer {
 
     return this.chartInstance;
 
+  }
+
+  calculateNclass(dataArray, usl = null, lsl = null){
+    const validData =dataArray.filter(val => val !== null && val !== undefined && !isNaN(val));
+    const n = validData.length;
+    if(n === 0) return null;
+
+
+    let extendedData = [...validData];
+    if(usl !== null) extendedData.push(usl);
+    if(lsl !== null) extendedData.push(lsl);
+
+    // スタージェスの公式で階級数を動的算出
+    const nClass = Math.ceil(1 + Math.log2(n));
+    // simple-statistics で境界値を取得
+    const breaks = equalIntervalBreaks(extendedData, nClass); // 拡張された範囲（規格値含む）をもとに equalIntervalBreaks を実行
+
+    return {
+      validData: validData !== null ? validData: null, // 度数カウント用には元のデータのみを渡す
+      nClasses: nClass !== null ? nClass: null,
+      breaks: breaks !== null ? breaks: null
+    }
   }
 }

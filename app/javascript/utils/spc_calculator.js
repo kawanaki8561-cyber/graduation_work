@@ -140,7 +140,7 @@ export default class SpcCalculator {
     };
 
   }
-
+  /*
   static calculateNclass(dataArray, usl = null, lsl = null){
     const validData =dataArray.filter(val => val !== null && val !== undefined && !isNaN(val));
     const n = validData.length;
@@ -162,6 +162,7 @@ export default class SpcCalculator {
       breaks: breaks !== null ? breaks: null
     }
   }
+  */
 
 
 }
