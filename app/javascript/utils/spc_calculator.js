@@ -148,14 +148,14 @@ export default class SpcCalculator {
 
 
     const extendedData = [...validData];
-    
+
     // スタージェスの公式で階級数を動的算出
     const nClass = Math.ceil(1 + Math.log2(n));
     // simple-statistics で境界値を取得
-    const breaks = equalIntervalBreaks(validData, nClass);
+    const breaks = equalIntervalBreaks(extendedData, nClass); // 拡張された範囲（規格値含む）をもとに equalIntervalBreaks を実行
 
     return {
-      validData: validData !== null ? validData: null,
+      validData: validData !== null ? validData: null, // 度数カウント用には元のデータのみを渡す
       nClasses: nClass !== null ? nClass: null,
       breaks: breaks !== null ? breaks: null
     }
