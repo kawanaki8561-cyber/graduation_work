@@ -147,7 +147,9 @@ export default class SpcCalculator {
     if(n === 0) return null;
 
 
-    const extendedData = [...validData];
+    let extendedData = [...validData];
+    if(usl !== null) extendedData.push(usl);
+    if(lsl !== null) extendedData.push(lsl);
 
     // スタージェスの公式で階級数を動的算出
     const nClass = Math.ceil(1 + Math.log2(n));
