@@ -99,9 +99,13 @@ export default class extends Controller {
     const { cl, sigma, ucl, lcl, outlierIndices, test3Indices } = spcResults;
 
     // 2.5. 工程能力指数を算出
-    const usl = this.hasUslTarget || this.uslTarget.valueAsNumber !== null ? this.uslTarget.valueAsNumber : null;
-    const lsl = this.hasLslTarget || this.lslTarget.valueAsNumber !== null ? this.lslTarget.valueAsNumber : null;
-    
+    // 修正後
+    const rawUsl = this.hasUslTarget ? parseFloat(this.uslTarget.value) : NaN;
+    const usl = !isNaN(rawUsl) ? rawUsl : null;
+
+    const rawLsl = this.hasLslTarget ? parseFloat(this.lslTarget.value) : NaN;
+    const lsl = !isNaN(rawLsl) ? rawLsl : null;
+
     const { cp, cpk } = SpcCalculator.calculateCpk(usl, lsl, cl, sigma);
     
 
