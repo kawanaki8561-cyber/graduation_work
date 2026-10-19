@@ -49,4 +49,28 @@ RSpec.describe 'SPC管理図描画フロー', type: :system do
     # <canvas id="controlChart" data-spc-chart-target="canvas"> が存在することを確認
     expect(page).to have_css('canvas[data-spc-chart-target="canvas"]')
   end
+
+  it 'CSVデータを読み込み、Cpk及びCpの値が規定の数値に計算される' do
+
+    # 1. サンプルデータ読み込みボタンをクリック（通常のCapybara操作で確実に発火）
+    click_button 'サンプルデータで試す'
+
+    # page.save_screenshot('tmp/capybara/manual_test.png')
+    expect(page).to have_select('select_column_name', with_options: ['I管理TEST1検知デモ'])
+
+    select 'I管理TEST1検知デモ', from: 'select_column_name'
+
+
+    fill_in '規格上限値', with: 15
+    fill_in '規格下限値', with: 5
+
+    # . 統計値（平均値）の反映を確認
+    expect(find('[data-spc-chart-target="cpk"]')).to have_content('1.52')
+
+    expect(find('[data-spc-chart-target="cp"]')).to have_content('1.57')
+
+
+  end
+
+
 end
