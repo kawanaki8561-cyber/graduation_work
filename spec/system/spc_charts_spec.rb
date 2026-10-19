@@ -51,7 +51,6 @@ RSpec.describe 'SPC管理図描画フロー', type: :system do
   end
 
   it 'CSVデータを読み込み、Cpk及びCpの値が規定の数値に計算される' do
-
     # 1. サンプルデータ読み込みボタンをクリック（通常のCapybara操作で確実に発火）
     click_button 'サンプルデータで試す'
 
@@ -60,7 +59,6 @@ RSpec.describe 'SPC管理図描画フロー', type: :system do
 
     select 'I管理TEST1検知デモ', from: 'select_column_name'
 
-
     fill_in '規格上限値', with: 15
     fill_in '規格下限値', with: 5
 
@@ -68,9 +66,5 @@ RSpec.describe 'SPC管理図描画フロー', type: :system do
     expect(find('[data-spc-chart-target="cpk"]')).to have_content('1.52')
 
     expect(find('[data-spc-chart-target="cp"]')).to have_content('1.57')
-
-
   end
-
-
 end
