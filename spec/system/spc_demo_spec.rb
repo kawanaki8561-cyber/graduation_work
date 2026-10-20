@@ -16,7 +16,7 @@ RSpec.describe 'サンプルデモ機能', type: :system do
 
   it '項目を選択すると、統計値が正しく算出・表示されること' do
     # 1. サンプルデータ読み込みボタンをクリック（通常のCapybara操作で確実に発火）
-    click_button 'サンプルデータで試す'
+    click_button 'サンプルデータで試す', exact_text: false
 
     # page.save_screenshot('tmp/capybara/manual_test.png')
     expect(page).to have_select('select_column_name', with_options: ['I管理TEST1検知デモ'])
