@@ -51,7 +51,6 @@ RSpec.describe 'SPC管理図描画フロー', type: :system do
   end
 
   it 'CSVデータを読み込み、Cpk及びCpの値が規定の数値に計算される' do
-
     # 1. サンプルデータ読み込みボタンをクリック（通常のCapybara操作で確実に発火）
     click_button 'サンプルデータで試す', exact_text: false
 
