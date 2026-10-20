@@ -14,9 +14,9 @@ export default class extends Controller {
   connect() {
     this.csvData = []
     this.chartRenderer = null
-    //this.buildDemonstration()
-    document.addEventListener('turbo:load', this.buildDemonstration);
-    document.addEventListener('DOMContentLoaded', this.buildDemonstration);
+    // this.buildDemonstration()
+    // document.addEventListener('turbo:load', this.buildDemonstration);
+    // document.addEventListener('DOMContentLoaded', this.buildDemonstration);
   }
 
 
@@ -50,14 +50,13 @@ export default class extends Controller {
     });
   }
 
-  buildDemonstration(){
-    const button =document.getElementById('demo_btn');
+  async buildDemonstration(event){
+    if(event) event.preventDefault();
 
-    button.addEventListener("click", async ()=>{
-      const uploader = new DemoUploader();
-      await uploader.csv_reader();
-    });
-    console.log('ボタンクリックしました');
+    const uploader =  new DemoUploader();
+    await uploader.csv_reader();
+
+    console.log('サンプルデータを読み込みました');
   }
 
   buildSelectOptions(fields) {
