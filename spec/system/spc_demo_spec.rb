@@ -16,13 +16,15 @@ RSpec.describe 'サンプルデモ機能', type: :system do
 
   it '項目を選択すると、統計値が正しく算出・表示されること' do
     # 1. サンプルデータ読み込みボタンをクリック（通常のCapybara操作で確実に発火）
-    click_button 'サンプルデータで試す'
+    click_button 'サンプルデータで試す', exact_text: false
+
+    # page.save_screenshot('tmp/capybara/manual_test.png')
     expect(page).to have_select('select_column_name', with_options: ['I管理TEST1検知デモ'])
     # 2. CSV読み込み完了（ファイル名反映）を待機
     # expect(page).to have_field('CSVファイル読み込み', with: /demo\.csv$/)
 
     # 3. カラムを選択（value属性で確実に特定）
-    # find('#select_column_name').find("option[value='I管理TEST1検知デモ']").select_option
+    # find('#select_column_name').find("option[value='I    管理TEST1検知デモ']").select_option
     select 'I管理TEST1検知デモ', from: 'select_column_name'
     # 4. セレクトボックスの選択値を確認
     # expect(find('#select_column_name').value).to eq 'I管理TEST1検知デモ'

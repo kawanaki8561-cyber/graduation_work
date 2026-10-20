@@ -6,10 +6,16 @@ RUN apt-get update -qq && apt-get install -y \
     default-libmysqlclient-dev \
     chromium \
     chromium-driver \
+    locales \
+    fontconfig \
+    fonts-noto-cjk \
+  && locale-gen ja_JP.UTF-8 \
+  && fc-cache -fv \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-ENV LANG=C.UTF-8 \
+ENV LANG=ja_JP.UTF-8 \
+    LC_ALL=ja_JP.UTF-8 \
     TZ=Asia/Tokyo \
     BUNDLE_APP_CONFIG=/usr/local/bundle
 

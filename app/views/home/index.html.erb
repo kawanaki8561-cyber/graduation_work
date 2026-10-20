@@ -86,6 +86,11 @@
         border: 1px solid var(--input-border);
         border-radius: 4px;
     }
+    
+    .histogram-container {
+      max-width: 650px;
+      width: 100%;
+    }
 
     /* --- サイドバーとトグルボタンのスタイル --- */
     .custom-sidebar {
@@ -239,6 +244,28 @@
             </div>
           </div>
 
+          <!-- 工程能力指数を Cpk と Cp の2枠に分割 -->
+          <div class="row g-3 mb-0">
+            <div class="col-md-6">
+              <div class="p-3 bg-light border">
+                <span class="text-muted small d-block mb-1">cpk</span>
+                <!-- 【変更】Target名を cpk に変更 -->
+                <span data-spc-chart-target="cpk" class="fs-4 fw-bold">-</span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-3 bg-light border">
+                <span class="text-muted small d-block mb-1">cp</span>
+                <!-- 【追加】Target名 cp を追加 -->
+                <span data-spc-chart-target="cp" class="fs-4 fw-bold">-</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="histogram-container mt-4">
+            <canvas data-spc-chart-target="histogramCanvas"></canvas>
+          </div>
+
         </div>
       </div>
 
@@ -282,7 +309,8 @@
             <div class="mt-2">
               <button type="button"
                 id="demo_btn"
-                class="btn btn-sm btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-1">
+                class="btn btn-sm btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-1"
+                data-action="click->spc-chart#buildDemonstration">
               <span class="material-symbols-outlined fs-6">science</span>
               サンプルデータで試す
               </button>
@@ -300,6 +328,18 @@
               <option value="measured_value">measured_value</option>
               <option value="note">note</option>
             </select>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="control-group">
+            <label for="usl_input" class="form-label small fw-bold mb-2">規格上限値</label>
+            <input id="usl_input" type="number" step="any" class="form-control form-control-sm"
+             data-spc-chart-target="usl"
+             data-action="input->spc-chart#hundleCalateCpk">
+            <label for="lsl_input" class="form-label small fw-bold mb-2">規格下限値</label>
+            <input id="lsl_input" type="number" step="any" class="form-control form-control-sm"
+             data-spc-chart-target="lsl"
+             data-action="input->spc-chart#hundleCalateCpk">
           </div>
         </div>
       </div>

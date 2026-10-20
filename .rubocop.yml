@@ -62,3 +62,8 @@ Metrics/ClassLength:
 # ABCサイズ（コードの複雑さ指標）の閾値を調整
 Metrics/AbcSize:
   Max: 30
+  
+# ブロックの行数制限（RSpecのテストファイルは長くなるのが当然なので除外）
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'

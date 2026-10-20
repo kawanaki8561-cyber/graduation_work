@@ -9,14 +9,14 @@ import DemoUploader from "utils/demo_uploader"
 
 export default class extends Controller {
   // 【変更】targets に "selectedColumnName" を追加
-  static targets = [ "select", "selectedColumnName", "mean", "stddev", "ucl", "lcl", "test1Outliers", "test3Outliers", "canvas" ]
+  static targets = [ "select", "selectedColumnName", "mean", "stddev", "ucl", "lcl", "test1Outliers", "test3Outliers", "canvas", "histogramCanvas", "usl", "lsl", "cpk", "cp" ]
 
   connect() {
     this.csvData = []
     this.chartRenderer = null
-    //this.buildDemonstration()
-    document.addEventListener('turbo:load', this.buildDemonstration);
-    document.addEventListener('DOMContentLoaded', this.buildDemonstration);
+    // this.buildDemonstration()
+    // document.addEventListener('turbo:load', this.buildDemonstration);
+    // document.addEventListener('DOMContentLoaded', this.buildDemonstration);
   }
 
 
@@ -50,14 +50,13 @@ export default class extends Controller {
     });
   }
 
-  buildDemonstration(){
-    const button =document.getElementById('demo_btn');
+  async buildDemonstration(event){
+    if(event) event.preventDefault();
 
-    button.addEventListener("click", async ()=>{
-      const uploader = new DemoUploader();
-      await uploader.csv_reader();
-    });
-    console.log('ボタンクリックしました');
+    const uploader =  new DemoUploader();
+    await uploader.csv_reader();
+
+    console.log('サンプルデータを読み込みました');
   }
 
   buildSelectOptions(fields) {
@@ -81,10 +80,10 @@ export default class extends Controller {
 
     if (!selectedColumn) return;
 
-    const columnData = this.csvData.map(row => row[selectedColumn]);
-    console.log(`【${selectedColumn}】の抽出データ:`, columnData);
+    this.currentDataArray = this.csvData.map(row => row[selectedColumn]);
+    console.log(`【${selectedColumn}】の抽出データ:`, this.currentDataArray);
 
-    this.processSPC(columnData);
+    this.processSPC(this.currentDataArray);
   }
 
   processSPC(dataArray) {
@@ -98,11 +97,24 @@ export default class extends Controller {
 
     const { cl, sigma, ucl, lcl, outlierIndices, test3Indices } = spcResults;
 
+    // 2.5. 工程能力指数を算出
+    // 修正後
+    const rawUsl = this.hasUslTarget ? parseFloat(this.uslTarget.value) : NaN;
+    const usl = !isNaN(rawUsl) ? rawUsl : null;
+
+    const rawLsl = this.hasLslTarget ? parseFloat(this.lslTarget.value) : NaN;
+    const lsl = !isNaN(rawLsl) ? rawLsl : null;
+
+    const { cp, cpk } = SpcCalculator.calculateCpk(usl, lsl, cl, sigma);
+    
+
     // 2. 画面（ViewのTarget）へ結果を出力
     if (this.hasMeanTarget) this.meanTarget.textContent = cl.toFixed(3);
     if (this.hasStddevTarget) this.stddevTarget.textContent = sigma.toFixed(3);
     if (this.hasUclTarget) this.uclTarget.textContent = ucl.toFixed(3);
     if (this.hasLclTarget) this.lclTarget.textContent = lcl.toFixed(3);
+    if (this.hasCpkTarget && cpk !== null) this.cpkTarget.textContent = cpk.toFixed(2);
+    if (this.hasCpTarget && cp !== null) this.cpTarget.textContent = cp.toFixed(2);
 
     // TEST1 異常件数の表示
     if (this.hasTest1OutliersTarget) {
@@ -127,13 +139,60 @@ export default class extends Controller {
         this.test3OutliersTarget.className = "fs-4 fw-bold text-success";
       }
     }
-
+    
     // 3. ChartRenderer を使ってグラフを描画
     if (this.hasCanvasTarget) {
       const ctx = this.canvasTarget.getContext('2d');
       this.chartRenderer = new ChartRenderer(ctx);
       this.chartRenderer.draw(spcResults);
     }
+
+    this.hundleDrawHistogram(dataArray, usl, lsl, cl);
+    
+
+  }
+
+  hundleDrawHistogram(dataArray, usl, lsl, cl){
+    if(this.hasHistogramCanvasTarget){  
+      const ctx = this.histogramCanvasTarget.getContext('2d');
+      this.histogramRenderer = new ChartRenderer(ctx);
+      this.histogramRenderer.drawHistogram(dataArray, usl, lsl, cl);
+    }
+  }
+
+  hundleCalateCpk(event){
+    const rawUsl = this.hasUslTarget ? parseFloat(this.uslTarget.value) : NaN;
+    const currentUsl = !isNaN(rawUsl) ? rawUsl : null;
+    
+    const rawLsl = this.hasLslTarget ? parseFloat(this.lslTarget.value) : NaN;
+    const currentLsl = !isNaN(rawLsl) ? rawLsl : null;
+
+    let displayCp = "-";
+    let displayCpk = "-";
+
+    if(currentUsl !== null || currentLsl !== null){
+
+      // 2.5. 工程能力指数を算出
+      const stddevText = this.hasStddevTarget ? this.stddevTarget.textContent : "";
+      const meanText = this.hasMeanTarget ? this.meanTarget.textContent : "";
+      // 初期値の "-" や空文字の場合は null にする
+      const sigma = (stddevText !== "" && stddevText !== "-") ? parseFloat(stddevText) : null;
+      const cl = (meanText !== "" && meanText !== "-") ? parseFloat(meanText) : null;
+
+      const result = SpcCalculator.calculateCpk(currentUsl, currentLsl, cl, sigma);
+
+      if(result){
+        if (result.cp !== null) displayCp = result.cp.toFixed(2);
+        if (result.cpk !== null) displayCpk = result.cpk.toFixed(2);
+      }       
+    this.hundleDrawHistogram(this.currentDataArray, currentUsl, currentLsl, cl);  
+    }
+     // 4. 最後に1回だけ画面（DOM）を更新する
+    if (this.hasCpTarget) this.cpTarget.textContent = displayCp;
+    if (this.hasCpkTarget) this.cpkTarget.textContent = displayCpk;
+
+    
+    
   }
 
   disconnect() {
