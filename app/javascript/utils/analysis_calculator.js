@@ -7,11 +7,13 @@ export default class AnalysisCalculator {
         const entries = columns.map(col => {
             const extracData = csvDataArray.map(val => val[col]);
             const { validAData,validBData } = this.getValidPairedData(extracData,selectedDataArray);
-            const r = sampleCorrelation(validAData,validBData);
-            return [col, r];
-        });
-
-        return correlationMap = Object.fromEntries(entries);
+            if( validAData.length >= 2 && validBData.length >= 2){
+                const r = sampleCorrelation(validAData,validBData);
+                return [col, r];
+            }
+        }).filter(Boolean);
+        
+        return Object.fromEntries(entries);
         
     }
 
