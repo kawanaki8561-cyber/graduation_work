@@ -34,8 +34,8 @@ export default class AnalysisCalculator {
             let currentAValue = columnAValues[i];
             let currentBValue = columnBValues[i];
             if(isValidNumber(currentAValue) && isValidNumber(currentBValue)){
-                validAData.push(currentAValue);
-                validBData.push(currentBValue);
+                validAData.push(Number(currentAValue));
+                validBData.push(Number(currentBValue));
             }
         }
 
