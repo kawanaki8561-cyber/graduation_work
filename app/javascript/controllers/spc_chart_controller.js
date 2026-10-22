@@ -86,8 +86,8 @@ export default class extends Controller {
 
     this.processSPC(this.currentDataArray);
 
-    const {validAData,validBData} = AnalysisCalculator.getValidPairedData(this.currentDataArray, this.currentDataArray);
-    console.log('カリキュレーターTEST：', validAData);
+    const result = AnalysisCalculator.calculateCorrelation(this.csvData, this.currentDataArray, selectedColumn);
+    
   }
 
   processSPC(dataArray) {
