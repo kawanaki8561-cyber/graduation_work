@@ -3,6 +3,15 @@ import { sampleCorrelation } from "simple-statistics"
 
 export default class AnalysisCalculator {
     static calculateCorrelation(csvDataArray,selectedDataArray,selectedColumn){
+        const columns = Object.keys(csvDataArray[0]).filter(val => val !== selectedColumn);
+        const entries = columns.map(col => {
+            const extracData = csvDataArray.map(val => val[col]);
+            const { validAData,validBData } = this.getValidPairedData(extracData,selectedDataArray);
+            const r = sampleCorrelation(validAData,validBData);
+            return [col, r];
+        });
+
+        return correlationMap = Object.fromEntries(entries);
         
     }
 
