@@ -6,6 +6,7 @@ import Papa from "papaparse"
 import SpcCalculator from "utils/spc_calculator"
 import ChartRenderer from "utils/chart_renderer"
 import DemoUploader from "utils/demo_uploader"
+import AnalysisCalculator from "utils/analysis_calculator"
 
 export default class extends Controller {
   // 【変更】targets に "selectedColumnName" を追加
@@ -84,6 +85,9 @@ export default class extends Controller {
     console.log(`【${selectedColumn}】の抽出データ:`, this.currentDataArray);
 
     this.processSPC(this.currentDataArray);
+
+    const {validAData,validBData} = AnalysisCalculator.getValidPairedData(this.currentDataArray, this.currentDataArray);
+    console.log('カリキュレーターTEST：', validAData);
   }
 
   processSPC(dataArray) {
@@ -159,6 +163,10 @@ export default class extends Controller {
       this.histogramRenderer.drawHistogram(dataArray, usl, lsl, cl);
     }
   }
+
+
+
+
 
   hundleCalateCpk(event){
     const rawUsl = this.hasUslTarget ? parseFloat(this.uslTarget.value) : NaN;
