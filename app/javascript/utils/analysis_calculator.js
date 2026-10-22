@@ -24,7 +24,7 @@ export default class AnalysisCalculator {
         const length = Math.min(columnAValues.length, columnBValues.length);
 
         const isValidNumber = (val) =>{
-            if(val === null || val === undefined || isNaN(val)){
+            if(val === null || val === undefined || isNaN(val) || String(val).trim() === ""){
                 return false;
             }
             return Number.isFinite(Number(val));
