@@ -10,7 +10,9 @@ import AnalysisCalculator from "utils/analysis_calculator"
 
 export default class extends Controller {
   // 【変更】targets に "selectedColumnName" を追加
-  static targets = [ "select", "selectedColumnName", "mean", "stddev", "ucl", "lcl", "test1Outliers", "test3Outliers", "canvas", "histogramCanvas", "usl", "lsl", "cpk", "cp" ]
+  static targets = [ "select", "selectedColumnName", "mean", "stddev", "ucl", "lcl",
+     "test1Outliers", "test3Outliers", "canvas", "histogramCanvas", "usl", "lsl",
+      "cpk", "cp", "correlationTableBody" ]
 
   connect() {
     this.csvData = []
