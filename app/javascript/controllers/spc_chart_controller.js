@@ -211,7 +211,7 @@ export default class extends Controller {
       fragment.appendChild(row);
 
     });
-
+    this.correlationTableBodyTarget.appendChild(fragment);
   }
 
 
