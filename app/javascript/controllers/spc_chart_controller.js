@@ -182,6 +182,8 @@ export default class extends Controller {
       return;
     }
 
+    const fragment = document.createDocumentFragment();
+
   }
 
 
