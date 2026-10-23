@@ -168,6 +168,8 @@ export default class extends Controller {
   renderCorrelationTable(results) {
     if (!this.hasCorrelationTableBodyTarget) return;
 
+    this.correlationTableBodyTarget.innerHTML = "";
+
     
   }
 
