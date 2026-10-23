@@ -88,8 +88,8 @@ export default class extends Controller {
 
     this.processSPC(this.currentDataArray);
 
-    const result = AnalysisCalculator.calculateCorrelation(this.csvData, this.currentDataArray, selectedColumn);
-    
+    const results = AnalysisCalculator.calculateCorrelation(this.csvData, this.currentDataArray, selectedColumn);
+    this.renderCorrelationTable(results);
   }
 
   processSPC(dataArray) {
@@ -214,7 +214,11 @@ export default class extends Controller {
     this.correlationTableBodyTarget.appendChild(fragment);
   }
 
-
+  escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  }
 
 
   hundleCalateCpk(event){
