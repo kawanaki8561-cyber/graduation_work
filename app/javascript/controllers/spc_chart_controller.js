@@ -165,7 +165,11 @@ export default class extends Controller {
       this.histogramRenderer.drawHistogram(dataArray, usl, lsl, cl);
     }
   }
+  renderCorrelationTable(results) {
+    if (!this.hasCorrelationTableBodyTarget) return;
 
+    
+  }
 
 
 
