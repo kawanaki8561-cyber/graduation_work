@@ -189,8 +189,16 @@ export default class extends Controller {
 
       const absR = Math.abs(r);
       const isPositive = r >= 0;
-
       
+      //相関の強さに応じてバッジを作る
+      let badgeHtml = "";
+      if (absR >= 0.7) {
+        badgeHtml = `<span class="badge bg-danger">強い相関 (${isPositive ? "+正" : "-負"})</span>`;
+      } else if (absR >= 0.4) {
+        badgeHtml = `<span class="badge bg-primary">中程度の相関 (${isPositive ? "+正" : "-負"})</span>`;
+      } else {
+        badgeHtml = `<span class="badge bg-secondary">弱い相関</span>`;
+      }
     }
 
   }
