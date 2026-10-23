@@ -14,7 +14,7 @@ pin_all_from 'app/javascript/controllers', under: 'controllers'
 
 # 外部ライブラリの設定
 pin 'chart.js', to: 'chart.js'
-pin '@kurkle/color', to: 'kurkle-color.js'
+# pin '@kurkle/color', to: 'kurkle-color.js'
 pin 'papaparse' # @5.5.4
 pin 'simple-statistics' # @7.9.3
 
