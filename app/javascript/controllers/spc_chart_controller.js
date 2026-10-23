@@ -189,7 +189,7 @@ export default class extends Controller {
 
       const absR = Math.abs(r);
       const isPositive = r >= 0;
-      
+
       //相関の強さに応じてバッジを作る
       let badgeHtml = "";
       if (absR >= 0.7) {
@@ -199,7 +199,18 @@ export default class extends Controller {
       } else {
         badgeHtml = `<span class="badge bg-secondary">弱い相関</span>`;
       }
-    }
+
+      row.innerHTML = `
+        <td class="align-middle fw-medium">${this.escapeHtml(colName)}</td>
+        <td class="align-middle text-center font-monospace fs-6">
+          ${isPositive ? "+" : ""}${r.toFixed(3)}
+        </td>
+        <td class="align-middle">${badgeHtml}</td>
+      `;
+
+      fragment.appendChild(row);
+
+    });
 
   }
 
