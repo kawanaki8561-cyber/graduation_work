@@ -170,7 +170,18 @@ export default class extends Controller {
 
     this.correlationTableBodyTarget.innerHTML = "";
 
-    
+    // データが存在しない場合のメッセージ表示（既存HTMLの3列に合わせて colspan="3"）
+    if (!results || results.length === 0) {
+      const emptyRow = document.createElement("tr");
+      emptyRow.innerHTML = `
+        <td colspan="3" class="text-center text-muted py-4">
+          有効な相関データがありません（データ数不足または一定値）
+        </td>
+      `;
+      this.correlationTableBodyTarget.appendChild(emptyRow);
+      return;
+    }
+
   }
 
 
