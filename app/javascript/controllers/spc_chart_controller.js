@@ -184,6 +184,15 @@ export default class extends Controller {
 
     const fragment = document.createDocumentFragment();
 
+    results.forEach(([colName, r]) => {
+      const row = document.createElement("tr");
+
+      const absR = Math.abs(r);
+      const isPositive = r >= 0;
+
+      
+    }
+
   }
 
 
