@@ -74,14 +74,17 @@ export default class extends Controller {
   }
 
   extractData(event) {
-    const selectedColumn = event.target.value;
+    const selectedColumn = event.target.value || "未選択" ;
     
     // 【追加】選択された項目名を HTML へ反映（未選択の場合は「未選択」）
     if (this.hasSelectedColumnNameTarget) {
-      this.selectedColumnNameTarget.textContent = selectedColumn || "未選択";
+
+      this.selectedColumnNameTargets.forEach(target => {
+        target.textContent = selectedColumn;
+      });
     }
 
-    if (!selectedColumn) return;
+    if (selectedColumn === "未選択") return;
 
     this.currentDataArray = this.csvData.map(row => row[selectedColumn]);
     console.log(`【${selectedColumn}】の抽出データ:`, this.currentDataArray);
@@ -165,6 +168,7 @@ export default class extends Controller {
       this.histogramRenderer.drawHistogram(dataArray, usl, lsl, cl);
     }
   }
+
   renderCorrelationTable(results) {
     if (!this.hasCorrelationTableBodyTarget) return;
 
