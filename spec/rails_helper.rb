@@ -71,7 +71,7 @@ RSpec.configure do |config|
 
   # System Spec実行時のデフォルトドライバをヘッドレスChromeに設定
   config.before(:each, type: :system) do
-    driven_by(:arm_headless_chrome)
+    driven_by :arm_headless_chrome, screen_size: [1400, 900]
   end
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
