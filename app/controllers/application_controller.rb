@@ -1,7 +1,8 @@
 class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
 
-  before_action :authenticate_user!
+  # ログイン画面でのアクションを除外
+  before_action :authenticate_user!, unless: :devise_controller?
 
   helper_method :current_or_guest_user
 
@@ -31,11 +32,9 @@ class ApplicationController < ActionController::Base
 
   # 現在のセッションに関連付けられたゲストユーザーを返す（なければ作成する）
   def guest_user(with_retry: true)
-    @guest_user ||= User.find(session[:guest_user_id] ||= create_guest_user.id)
-  rescue ActiveRecord::RecordNotFound
-    # データベースからレコードが削除されていた場合のセーフティ
-    session[:guest_user_id] = nil
-    with_retry ? guest_user(false) : nil
+    return nil unless session[:guest_user_id]
+
+    @guest_user ||= User.find(session[:guest_user_id])
   end
 
   protected
