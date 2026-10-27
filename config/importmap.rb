@@ -13,8 +13,8 @@ pin '@hotwired/stimulus-loading', to: 'stimulus-loading.js'
 pin_all_from 'app/javascript/controllers', under: 'controllers'
 
 # 外部ライブラリの設定
-pin "chart.js" # @4.6.1
-pin "@kurkle/color", to: "@kurkle--color.js" # @0.3.4
+pin 'chart.js' # @4.6.1
+pin '@kurkle/color', to: '@kurkle--color.js' # @0.3.4
 pin 'papaparse' # @5.5.4
 pin 'simple-statistics' # @7.9.3
 
