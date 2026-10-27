@@ -13,9 +13,8 @@ RSpec.describe 'SPC管理解析フロー', type: :system do
       click_button 'ログイン'
 
       click_button 'サンプルデータで試す', exact_text: false
-
     end
-    
+
     context 'I管理TEST1検知デモの項目解析' do
       before do
         select 'I管理TEST1検知デモ', from: 'select_column_name'
