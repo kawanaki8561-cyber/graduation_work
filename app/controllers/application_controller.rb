@@ -32,9 +32,9 @@ class ApplicationController < ActionController::Base
 
   # 現在のセッションに関連付けられたゲストユーザーを返す（なければ作成する）
   def guest_user(with_retry: true)
-    return nil unless session[:guest_user_id]
+    @guest_user ||= User.find_by(id: session[:guest_user_id]) if session[:guest_user_id]
 
-    @guest_user ||= User.find(session[:guest_user_id])
+    @guest_user ||= create_guest_user
   end
 
   protected
