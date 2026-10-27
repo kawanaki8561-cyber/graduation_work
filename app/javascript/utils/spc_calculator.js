@@ -1,6 +1,5 @@
 // app/javascript/utils/spc_calculator.js
 import { mean, standardDeviation } from "simple-statistics"
-import { equalIntervalBreaks } from "simple-statistics";
 
 
 export default class SpcCalculator {

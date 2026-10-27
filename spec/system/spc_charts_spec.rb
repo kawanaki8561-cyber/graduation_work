@@ -45,7 +45,8 @@ RSpec.describe 'SPC管理図描画フロー', type: :system do
     end
 
     # 5. グラフ（Canvas）の描画検証
-    click_button 'SPC管理図'
+    # click_button 'STEP3: SPC管理図'
+    find('#spc-tab').execute_script('this.click()')
     # <canvas id="controlChart" data-spc-chart-target="canvas"> が存在することを確認
     expect(page).to have_css('canvas[data-spc-chart-target="canvas"]')
   end

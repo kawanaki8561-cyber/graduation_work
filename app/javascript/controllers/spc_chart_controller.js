@@ -6,10 +6,13 @@ import Papa from "papaparse"
 import SpcCalculator from "utils/spc_calculator"
 import ChartRenderer from "utils/chart_renderer"
 import DemoUploader from "utils/demo_uploader"
+import AnalysisCalculator from "utils/analysis_calculator"
 
 export default class extends Controller {
   // 【変更】targets に "selectedColumnName" を追加
-  static targets = [ "select", "selectedColumnName", "mean", "stddev", "ucl", "lcl", "test1Outliers", "test3Outliers", "canvas", "histogramCanvas", "usl", "lsl", "cpk", "cp" ]
+  static targets = [ "select", "selectedColumnName", "mean", "stddev", "ucl", "lcl",
+     "test1Outliers", "test3Outliers", "canvas", "histogramCanvas", "usl", "lsl",
+      "cpk", "cp", "correlationTableBody" ]
 
   connect() {
     this.csvData = []
@@ -71,19 +74,26 @@ export default class extends Controller {
   }
 
   extractData(event) {
-    const selectedColumn = event.target.value;
+    const rawColumn = event.target.value;
+    const selectedColumn = rawColumn || "未選択" ;
     
     // 【追加】選択された項目名を HTML へ反映（未選択の場合は「未選択」）
     if (this.hasSelectedColumnNameTarget) {
-      this.selectedColumnNameTarget.textContent = selectedColumn || "未選択";
+
+      this.selectedColumnNameTargets.forEach(target => {
+        target.textContent = selectedColumn;
+      });
     }
 
-    if (!selectedColumn) return;
+    if ( !rawColumn ) return;
 
     this.currentDataArray = this.csvData.map(row => row[selectedColumn]);
     console.log(`【${selectedColumn}】の抽出データ:`, this.currentDataArray);
 
     this.processSPC(this.currentDataArray);
+
+    const results = AnalysisCalculator.calculateCorrelation(this.csvData, this.currentDataArray, selectedColumn);
+    this.renderCorrelationTable(results);
   }
 
   processSPC(dataArray) {
@@ -159,6 +169,62 @@ export default class extends Controller {
       this.histogramRenderer.drawHistogram(dataArray, usl, lsl, cl);
     }
   }
+
+  renderCorrelationTable(results) {
+    if (!this.hasCorrelationTableBodyTarget) return;
+
+    this.correlationTableBodyTarget.innerHTML = "";
+
+    // データが存在しない場合のメッセージ表示（既存HTMLの3列に合わせて colspan="3"）
+    if (!results || results.length === 0) {
+      const emptyRow = document.createElement("tr");
+      emptyRow.innerHTML = `
+        <td colspan="3" class="text-center text-muted py-4">
+          有効な相関データがありません（データ数不足または一定値）
+        </td>
+      `;
+      this.correlationTableBodyTarget.appendChild(emptyRow);
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+
+    results.forEach(([colName, r]) => {
+      const row = document.createElement("tr");
+
+      const absR = Math.abs(r);
+      const isPositive = r >= 0;
+
+      //相関の強さに応じてバッジを作る
+      let badgeHtml = "";
+      if (absR >= 0.7) {
+        badgeHtml = `<span class="badge bg-danger">強い相関 (${isPositive ? "+正" : "-負"})</span>`;
+      } else if (absR >= 0.4) {
+        badgeHtml = `<span class="badge bg-primary">中程度の相関 (${isPositive ? "+正" : "-負"})</span>`;
+      } else {
+        badgeHtml = `<span class="badge bg-secondary">弱い相関</span>`;
+      }
+
+      row.innerHTML = `
+        <td class="align-middle fw-medium">${this.escapeHtml(colName)}</td>
+        <td class="align-middle text-center font-monospace fs-6">
+          ${isPositive ? "+" : ""}${r.toFixed(3)}
+        </td>
+        <td class="align-middle">${badgeHtml}</td>
+      `;
+
+      fragment.appendChild(row);
+
+    });
+    this.correlationTableBodyTarget.appendChild(fragment);
+  }
+
+  escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
 
   hundleCalateCpk(event){
     const rawUsl = this.hasUslTarget ? parseFloat(this.uslTarget.value) : NaN;

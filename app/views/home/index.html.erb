@@ -183,7 +183,7 @@
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="other-tab" data-bs-toggle="tab" data-bs-target="#other-pane" type="button" role="tab" aria-selected="false">
-          STEP4: ComingSoon
+          STEP4: 相関関係の解析
         </button>
       </li>
     </ul>
@@ -290,9 +290,49 @@
         </div>
       </div>
 
+      <!-- 最後のタブ：要因解析（相関データ） -->
       <div class="tab-pane fade" id="other-pane" role="tabpanel" aria-labelledby="other-tab">
-        <div class="graph-container d-flex align-items-center justify-content-center">
-          <p class="text-muted">ここに第2のグラフ（例：ヒストグラム、パレート図など）を描画します</p>
+        <div class="graph-container">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h5 fw-bold mb-0">要因解析：相関係数一覧</h2>
+            <div class="text-muted small">
+              基準項目：<span data-spc-chart-target="selectedColumnName" class="fw-bold text-dark">未選択</span>
+            </div>
+          </div>
+
+          <!-- 相関の読み方ガイド -->
+          <div class="alert alert-light border small text-muted mb-4 py-2 px-3">
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <span class="material-symbols-outlined fs-6 text-primary">info</span>
+              <span class="fw-bold text-dark">相関係数（r）の目安</span>
+            </div>
+            <div class="d-flex gap-3 flex-wrap">
+              <span><span class="badge bg-danger">|r| ≧ 0.7</span> 強い相関</span>
+              <span><span class="badge bg-primary">0.4 ≦ |r| &lt; 0.7</span> 中程度の相関</span>
+              <span><span class="badge bg-secondary">|r| &lt; 0.4</span> 弱い相関（ほぼ無相関）</span>
+            </div>
+          </div>
+
+          <!-- 相関データ一覧テーブル -->
+          <div class="table-responsive">
+            <table class="table table-hover align-middle border mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th style="width: 45%;">対象項目名</th>
+                  <th style="width: 25%;" class="text-center">相関係数 (r)</th>
+                  <th style="width: 30%;">相関の強さ</th>
+                </tr>
+              </thead>
+              <tbody data-spc-chart-target="correlationTableBody">
+                <tr>
+                  <td colspan="3" class="text-center text-muted py-4">
+                    データが未選択です。上部のプルダウンから項目を選択してください。
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
         </div>
       </div>
     </div>
