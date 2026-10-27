@@ -1,8 +1,6 @@
 // app/javascript/utils/chart_renderer.js
 import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
-//import SpcCalculator from "utils/spc_calculator"
-import { equalIntervalBreaks } from "simple-statistics";
 
 export default class ChartRenderer {
   // コンストラクタで対象となる Canvas のコンテキストを受け取る
@@ -11,25 +9,19 @@ export default class ChartRenderer {
     this.chartInstance = null;
   }
 
-  // 既存のChart破棄処理を共通化
-  destroyExistingChart(){
-    const existingChart = Chart.getChart(this.ctx);
-    if(existingChart){
-      existingChart.destroy();
-    }
-    if(this.chartInstance){
-      this.chartInstance.destroy();
-    }
-  }
-
   // グラフを描画するメソッド
   draw(spcResults) {
     // 【変更】outlierIndices (TEST1) と test3Indices (TEST3) の両方を受け取り
     const { validData, cl, ucl, lcl, outlierIndices = [], test3Indices = [] } = spcResults;
 
     // 1. Canvas 上に既存の Chart インスタンスが存在する場合は確実に破棄（重複エラー防止）
-    this.destroyExistingChart();
-
+    const existingChart = Chart.getChart(this.ctx);
+    if (existingChart) {
+      existingChart.destroy();
+    }
+    if (this.chartInstance) {
+      this.chartInstance.destroy();
+    }
 
     // 2. X軸のラベルを作成 (データ数に合わせて 1, 2, 3... と連番を振る)
     const labels = validData.map((_, index) => index + 1);
@@ -144,185 +136,5 @@ export default class ChartRenderer {
         }
       }
     });
-  }
-
-  // 2. 【新規追加】ヒストグラム描画メソッド
-  drawHistogram(dataArray, usl = null, lsl = null, cl = null) {
-    
-    this.destroyExistingChart();
-
-    // スタージェスの公式で階級数を動的算出
-    const result = this.calculateNclass(dataArray, usl, lsl);
-    if(!result) return null;
-    
-    const {validData, nClasses, breaks} = result;
-    
-    const labels = [];
-    const counts = new Array(nClasses).fill(0);
-
-    //xラベル生成
-    for(let i=0;i < nClasses; i++){
-      labels.push(`${breaks[i].toFixed(1)} - ${breaks[i + 1].toFixed(1)}`);
-    }
-
-
-    //度数集計
-    validData.forEach(val => {
-      for (let i = 0; i < nClasses; i++){
-        const isLastBin = (i === nClasses - 1);
-        if (val >= breaks[i] && (isLastBin ? val <= breaks[i + 1] : val < breaks[i + 1])){
-          counts[i]++;
-          break;
-        }
-      }
-    });
-
-    const specLinesPlugin = {
-      id: 'specLines',
-      afterDraw: (chart) =>{
-        const { ctx, chartArea: { top, bottom, left, right } } = chart;
-        const minVal = breaks[0];
-        const maxVal = breaks[breaks.length - 1];
-        const range = maxVal - minVal;
-
-        if (range <= 0) return;
-        
-        const drawVerticalLine = (value, color, labelText) =>{
-          if (value === null || value === undefined || isNaN(value)) return;
-          if (value < minVal || value > maxVal) return;
-
-          // 【位置計算】指定された数値（value）を画面上の Xピクセル位置（xPos）に変換
-          const ratio = (value - minVal) / range;
-          const xPos = left + ratio * (right - left);
-
-          //Canvas API による線の描画
-          ctx.save();
-          ctx.beginPath();
-          ctx.setLineDash([5, 5]);
-          ctx.strokeStyle =color;
-          ctx.lineWidth = 2; // ★修正: Wを大文字に変更
-          ctx.moveTo(xPos, top);
-          ctx.lineTo(xPos, bottom);
-          ctx.stroke();
-
-          // 線脇のテキスト（USL: 10.0 など）の描画
-          ctx.fillStyle = color;
-          ctx.font = 'bold 11px sans-serif';
-          const textX = (xPos > right - 60) ? (xPos - 55) : (xPos + 4);
-          ctx.fillText(labelText, textX, top + 15);
-          ctx.restore();
-        };
-
-        // 3\. 各限界線・中央線の描画を実行
-        drawVerticalLine(usl, 'red', `USL: ${usl}`);
-        drawVerticalLine(lsl, 'red', `LSL: ${lsl}`);
-        drawVerticalLine(cl, 'green', cl !== null && !isNaN(cl) ?  `CL: ${cl.toFixed(2)}` : 'CL');
-
-      }
-    };
-
-    //Chart.js の最もシンプルな基本構成 ▼▼
-    this.chartInstance = new Chart(this.ctx, {
-      type: "bar",
-      data: {
-        labels: labels,
-        datasets: [{
-          label: "度数",
-          data: counts,
-          backgroundColor: 'rgba(54, 162, 235, 0.6)',
-          borderColor: 'rgba(54, 162, 235, 1)', // 枠線をくっきり表示
-          borderWidth: 1, // 柱の境界線
-          barPercentage: 1.0, // 柱同士の隙間をなくす
-          categoryPercentage: 1.0
-        }] 
-      },
-      options: {
-        responsive: true,
-        //maintainAspectRatio: false, // 親要素のサイズにフィット
-        plugins: {
-          legend: {
-            display: false
-          },
-          tooltip: {
-            callbacks: {
-              label: (context) => `度数： ${context.raw}件`
-            }
-          }
-        },
-        scales: {
-          x: {
-            title:{
-              display: true,
-              text: '階級（測定値範囲）',
-              font: { weight: 'bold' }
-            },
-            grid: {
-              display: false
-            }
-          },
-          y: {
-            title: {
-              display: true,
-              text: '度数(件数)',
-              font: { weight: 'bold' }
-            },
-            beginAtZero: true, // 常に0から開始
-            ticks: { precision: 0 }
-          }
-        }
-      },
-      plugins: [specLinesPlugin]
-    });
-
-    return this.chartInstance;
-
-  }
-
-  calculateNclass(dataArray, usl = null, lsl = null){
-    const validData =dataArray.filter(val => val !== null && val !== undefined && !isNaN(val));
-    const n = validData.length;
-    if(n === 0) return null;
-
-
-    // スタージェスの公式で階級数を動的算出
-    let nClass = Math.ceil(1 + Math.log2(n));
-    // simple-statistics で境界値を取得
-    let breaks = equalIntervalBreaks(validData, nClass); // 拡張された範囲（規格値含む）をもとに equalIntervalBreaks を実行
-    
-
-    // 階級幅の算出と浮動小数点丸め用の精度（有効桁数）判定
-    const bleaksRange = breaks[1] - breaks[0];
-    const decimals = (bleaksRange.toString().split('.')[1] || '').length + 2;
-    const round = (val) => Number(val.toFixed(decimals));
-
-
-    // --- USL（上限）の拡張 ---
-    const currentMaxRange = breaks[breaks.length - 1];
-    if(usl !== null && usl > currentMaxRange){
-      let nextValue = currentMaxRange;
-      while(nextValue < usl){
-        nextValue = round(nextValue + bleaksRange);
-        breaks.push(nextValue);
-      }
-    };
-
-    // --- LSL（下限）の拡張 ---
-    const currentMinRange = breaks[0];
-    if (lsl !== null && lsl < currentMinRange) {
-      let prevValue = currentMinRange;
-      while (prevValue > lsl) {
-        prevValue = round(prevValue - bleaksRange);
-        breaks.unshift(prevValue);
-      }
-
-    }
-    // 拡張後の最終階級数（区間の数 = 境界値の数 - 1）
-    const nClasses = breaks.length - 1;
-
-    return {
-      validData, // 度数カウント用には元のデータのみを渡す
-      nClasses,
-      breaks
-    }
   }
 }

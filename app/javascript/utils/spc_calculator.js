@@ -1,7 +1,6 @@
 // app/javascript/utils/spc_calculator.js
 import { mean, standardDeviation } from "simple-statistics"
 
-
 export default class SpcCalculator {
   // インスタンス化せずに使えるよう static メソッドとして定義
   static calculate(dataArray) {
@@ -83,85 +82,4 @@ export default class SpcCalculator {
     // 重複を除外して返す
     return Array.from(new Set(outliers));
   }
-
-  /** 工程能力指数（Cp, Cpk）を計算する 
-  * @param {number|null} usl - 規格上限 (Upper Specification Limit)
-  * @param {number|null} lsl - 規格下限 (Lower Specification Limit)
-  * @param {number} mean - 工程平均 \* @param {number} std - 標準偏差(σ)
-  * @returns {Object|null} { cp, cpk, cpu, cpl } または null
-  */
-
-  static calculateCpk(usl, lsl, mean, std){
-    if(typeof mean !== "number" || isNaN(mean)) return null;
-    if(typeof std !== "number" || isNaN(std) || std <= 0) return null;
-    
-    const hasUsl = usl !==null && usl !== undefined && !isNaN(Number(usl));
-    const hasLsl = lsl !==null && lsl !== undefined && !isNaN(Number(lsl));
-    
-    //if(!hasUsl && !hasLsl) return null;
-
-    const numUsl = hasUsl ? Number(usl) : null;
-    const numLsl = hasLsl ? Number(lsl) : null;
-    
-    let cpu = null;
-    let cpl = null; 
-    let cp = null;
-
-    // 1. Cpの計算
-    if(hasUsl && hasLsl){
-      cp = (numUsl - numLsl)/(6 * std);
-    }
-
-    // 2. Cpkの計算
-    if(hasUsl){
-      cpu = (numUsl - mean) / (3 * std);      
-    } 
-
-    if(hasLsl){
-      cpl = (mean - numLsl) / (3 * std);
-    }
-    
-    // 小さい方を採用する
-    let cpk = null;
-    if(hasUsl && hasLsl){
-      cpk = Math.min(cpu, cpl);
-    }else if(hasUsl){
-      cpk = cpu;
-    }else if(hasLsl){
-      cpk = cpl;
-    }
-    
-    console.log("calculateCpkは起動しました");
-
-    return {
-      cp: cp !== null ? Number(cp) : null,
-      cpk: cpk !== null ? Number(cpk) : null,
-    };
-
-  }
-  /*
-  static calculateNclass(dataArray, usl = null, lsl = null){
-    const validData =dataArray.filter(val => val !== null && val !== undefined && !isNaN(val));
-    const n = validData.length;
-    if(n === 0) return null;
-
-
-    let extendedData = [...validData];
-    if(usl !== null) extendedData.push(usl);
-    if(lsl !== null) extendedData.push(lsl);
-
-    // スタージェスの公式で階級数を動的算出
-    const nClass = Math.ceil(1 + Math.log2(n));
-    // simple-statistics で境界値を取得
-    const breaks = equalIntervalBreaks(extendedData, nClass); // 拡張された範囲（規格値含む）をもとに equalIntervalBreaks を実行
-
-    return {
-      validData: validData !== null ? validData: null, // 度数カウント用には元のデータのみを渡す
-      nClasses: nClass !== null ? nClass: null,
-      breaks: breaks !== null ? breaks: null
-    }
-  }
-  */
-
-
 }
