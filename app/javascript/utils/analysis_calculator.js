@@ -13,7 +13,7 @@ export default class AnalysisCalculator {
             }
         }).filter(Boolean);
         
-        return Object.fromEntries(entries);
+        return entries.sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));
         
     }
 
